@@ -64,7 +64,7 @@ public class User implements Serializable {
     /**
      * 是否删除
      */
-    private Integer isDelete;
+    private Integer deleted;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
