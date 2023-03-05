@@ -25,6 +25,10 @@ public class BaseResponse<T> implements Serializable {
     @ApiModelProperty("描述信息")
     private String desc;
 
+    /*无参构造是避免jackson转换时, 无法创建创建对象而报错*/
+    public BaseResponse() {
+    }
+    
     public BaseResponse(int code, T data, String msg, String desc) {
         this.code = code;
         this.data = data;
