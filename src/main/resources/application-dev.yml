@@ -1,7 +1,7 @@
 server:
   port: 9999
   servlet:
-    context-path: /api
+    context-path: /api/app
 
 spring:
   application:
@@ -9,7 +9,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/open_api
+    url: jdbc:mysql://localhost:3306/boot_init
     username: root
     password: root
     type: com.alibaba.druid.pool.DruidDataSource
@@ -59,4 +59,5 @@ knife4j:
   basic:
     enable: true # 此项设置为true表示开启账号密码验证
     username: admin # enable为true时对应的登陆账号
-    password: admin # enable为true时对应的登陆密码    
+    password: admin # enable为true时对应的登陆密码
+      

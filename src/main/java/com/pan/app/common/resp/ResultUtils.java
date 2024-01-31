@@ -1,4 +1,4 @@
-package com.pan.app.common;
+package com.pan.app.common.resp;
 
 /**
  * @description:

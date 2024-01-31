@@ -1,4 +1,4 @@
-package com.pan.app.common;
+package com.pan.app.common.resp;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

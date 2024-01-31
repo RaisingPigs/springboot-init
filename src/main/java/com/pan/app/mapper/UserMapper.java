@@ -2,7 +2,6 @@ package com.pan.app.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.pan.app.model.entity.User;
-import org.apache.ibatis.annotations.Param;
 
 /**
  * @author Mr.Pan

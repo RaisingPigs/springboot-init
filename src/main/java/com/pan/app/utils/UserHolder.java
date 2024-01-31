@@ -1,7 +1,7 @@
 package com.pan.app.utils;
 
-import com.pan.app.model.entity.User;
-import com.pan.app.model.vo.UserVo;
+
+import com.pan.app.model.dto.user.UserDTO;
 
 /**
  * @description:
@@ -9,17 +9,17 @@ import com.pan.app.model.vo.UserVo;
  * @create: 2023-02-21 22:16
  **/
 public class UserHolder {
-    private static final ThreadLocal<UserVo> tl = new ThreadLocal<>();
+    private static final ThreadLocal<UserDTO> THREAD_LOCAL = new ThreadLocal<>();
 
-    public static void saveUser(UserVo userVo) {
-        tl.set(userVo);
+    public static void saveUser(UserDTO userDTO) {
+        THREAD_LOCAL.set(userDTO);
     }
-    
-    public static UserVo getUser() {
-        return tl.get();
+
+    public static UserDTO getUser() {
+        return THREAD_LOCAL.get();
     }
 
     public static void removeUser() {
-        tl.remove();
+        THREAD_LOCAL.remove();
     }
 }

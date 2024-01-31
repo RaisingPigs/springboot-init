@@ -42,8 +42,8 @@ public class InterfaceLogAop {
         String reqParam = "[" + StringUtils.join(args, ", ") + "]";
 
         /*输出请求日志*/
-        log.info("request start. id: {}, url: {}, ip: {}, params: {}",
-                reqId, url, request.getRemoteHost(), reqParam);
+        log.info("request start. id: [{}], url: [{}], ip: [{}], params: [{}]",
+            reqId, url, request.getRemoteHost(), reqParam);
 
         /*执行原方法*/
         Object res = point.proceed();
@@ -51,8 +51,7 @@ public class InterfaceLogAop {
         /*输出响应日志*/
         stopWatch.stop();
         long timeMillis = stopWatch.getTotalTimeMillis();
-        log.info("request end. id: {}, cost: {}ms",
-                reqId, timeMillis);
+        log.info("request end. id: [{}], cost: [{}]ms", reqId, timeMillis);
 
         return res;
     }

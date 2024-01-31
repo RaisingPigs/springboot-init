@@ -1,7 +1,5 @@
-package com.pan.app.model.request.user;
+package com.pan.app.model.req.user;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,21 +10,21 @@ import java.io.Serializable;
  * @create: 2023-02-21 16:31
  **/
 @Data
-public class UserAddRequest implements Serializable {
+public class UserAddReq implements Serializable {
     /**
      * 用户昵称
      */
-    private String userName;
+    private String username;
 
     /**
      * 账号
      */
-    private String userAccount;
+    private String account;
 
     /**
      * 用户头像
      */
-    private String userAvatar;
+    private String avatar;
 
     /**
      * 性别
@@ -36,12 +34,12 @@ public class UserAddRequest implements Serializable {
     /**
      * 用户角色：user / admin
      */
-    private String userRole;
+    private Integer role;
 
     /**
      * 密码
      */
-    private String userPassword;
+    private String password;
 
     private static final long serialVersionUID = 1L;
 }

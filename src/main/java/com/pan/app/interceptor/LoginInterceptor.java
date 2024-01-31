@@ -1,11 +1,11 @@
 package com.pan.app.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pan.app.common.BaseResponse;
-import com.pan.app.common.ResultCode;
-import com.pan.app.common.ResultUtils;
-import com.pan.app.constant.UserConstant;
-import com.pan.app.model.vo.UserVo;
+import com.pan.app.common.resp.BaseResponse;
+import com.pan.app.common.resp.ResultCode;
+import com.pan.app.common.resp.ResultUtils;
+import com.pan.app.constant.RedisConstant;
+import com.pan.app.model.dto.user.UserDTO;
 import com.pan.app.utils.UserHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -27,12 +27,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        UserVo userVo = (UserVo) request.getSession().getAttribute(UserConstant.USER_LOGIN_STATE);
-        if (userVo == null) {
+        UserDTO userDTO = (UserDTO) request.getSession().getAttribute(RedisConstant.USER_LOGIN_STATE);
+        if (userDTO == null) {
             respMsg(response, ResultUtils.failed(ResultCode.NO_LOGIN));
             return false;
         }
-        UserHolder.saveUser(userVo);
+        UserHolder.saveUser(userDTO);
         return true;
     }
 
@@ -42,8 +42,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     private void respMsg(
-            HttpServletResponse response,
-            BaseResponse baseResponse) throws IOException {
+        HttpServletResponse response,
+        BaseResponse baseResponse) throws IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Cache-Control", "no-cache");
         response.setCharacterEncoding("UTF-8");

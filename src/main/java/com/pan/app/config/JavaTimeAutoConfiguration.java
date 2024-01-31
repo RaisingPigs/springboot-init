@@ -19,7 +19,7 @@ public class JavaTimeAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty("spring.jackson.date-format")
-    Jackson2ObjectMapperBuilderCustomizer customizeLocalDateTimeFormat(@Value("${spring.jackson.date-format}") String dateFormat){
+    public Jackson2ObjectMapperBuilderCustomizer customizeLocalDateTimeFormat(@Value("${spring.jackson.date-format}") String dateFormat) {
         return jacksonObjectMapperBuilder -> {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
 

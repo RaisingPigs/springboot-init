@@ -1,8 +1,8 @@
 package com.pan.app.exception;
 
-import com.pan.app.common.BaseResponse;
-import com.pan.app.common.ResultCode;
-import com.pan.app.common.ResultUtils;
+import com.pan.app.common.resp.BaseResponse;
+import com.pan.app.common.resp.ResultCode;
+import com.pan.app.common.resp.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

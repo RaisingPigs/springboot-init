@@ -1,6 +1,6 @@
 package com.pan.app.exception;
 
-import com.pan.app.common.ResultCode;
+import com.pan.app.common.resp.ResultCode;
 
 /**
  * @description:

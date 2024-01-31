@@ -1,8 +1,8 @@
 package com.pan.app.service;
 
-import com.pan.app.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.pan.app.model.vo.UserVo;
+import com.pan.app.model.entity.User;
+import com.pan.app.model.vo.user.UserVO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserService extends IService<User> {
     void validUser(User user, boolean add);
 
-    UserVo userLogin(String userAccount, String userPassword, HttpServletRequest request);
+    UserVO userLogin(String account, String password, HttpServletRequest request);
 
     boolean userLogout(HttpServletRequest request);
 
-    long userRegist(String userAccount, String userPassword, String checkPassword);
+    long userRegist(String account, String password, String checkPassword);
 
     boolean isAdmin();
 }
