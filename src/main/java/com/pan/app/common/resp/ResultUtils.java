@@ -7,7 +7,7 @@ package com.pan.app.common.resp;
  **/
 public class ResultUtils {
     public static <T> BaseResponse<T> success(T data) {
-        return new BaseResponse<T>(ResultCode.SUCCESS, data);
+        return new BaseResponse<>(ResultCode.SUCCESS, data);
     }
 
     public static <T> BaseResponse<T> failed(ResultCode resultCode) {

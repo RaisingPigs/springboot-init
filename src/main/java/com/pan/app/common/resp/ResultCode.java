@@ -1,10 +1,13 @@
 package com.pan.app.common.resp;
 
+import lombok.Getter;
+
 /**
  * @description:
  * @author: Mr.Pan
  * @create: 2022-10-07 14:39
  **/
+@Getter
 public enum ResultCode {
     SUCCESS(20000, "success", ""),
     PARAMS_ERR(40000, "请求参数错误", ""),
@@ -26,15 +29,4 @@ public enum ResultCode {
         this.desc = desc;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
 }

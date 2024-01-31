@@ -1,7 +1,5 @@
 package com.pan.app.service;
 
-import cn.hutool.core.lang.UUID;
-import cn.hutool.core.util.StrUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.DigestUtils;
 

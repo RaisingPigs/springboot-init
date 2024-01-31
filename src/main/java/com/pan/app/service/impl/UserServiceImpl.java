@@ -1,6 +1,5 @@
 package com.pan.app.service.impl;
 
-import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pan.app.common.resp.ResultCode;
@@ -35,7 +34,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     /*加盐*/
     private static final String SALT = "pan";
     private static final String DEFAULT_USERNAME_PREFIX = "默认用户名";
-    private final UserMapper userMapper;
 
     @Override
     public void validUser(User user, boolean add) {

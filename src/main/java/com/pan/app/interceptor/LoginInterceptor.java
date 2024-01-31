@@ -37,13 +37,13 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         UserHolder.removeUser();
     }
 
     private void respMsg(
         HttpServletResponse response,
-        BaseResponse baseResponse) throws IOException {
+        BaseResponse<?> baseResponse) throws IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Cache-Control", "no-cache");
         response.setCharacterEncoding("UTF-8");

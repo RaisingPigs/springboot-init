@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public <T> BaseResponse<T> businessExceptionHandler(BusinessException e) {
-        log.error("" + e.getMessage(), e);
+        log.error("全局异常处理BusinessException: [{}]", e.getMessage(), e);
         return ResultUtils.failed(e.getCode(), e.getMessage(), e.getDesc());
     }
 
     @ExceptionHandler(Exception.class)
     public <T> BaseResponse<T> exceptionHandler(Exception e) {
-        log.error("" + e.getMessage(), e);
+        log.error("全局异常处理Exception: [{}]", e.getMessage(), e);
         return ResultUtils.failed(ResultCode.SYSTEM_ERR, e.getMessage(), "");
     }
 }
