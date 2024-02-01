@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -36,12 +37,10 @@ public class AuthAop {
         RoleEnum mustRole = authCheck.mustRole();
 
         /*获取已登录用户*/
-        UserDTO userDTO = UserHolder.getUser();
-        if (userDTO == null) {
-            throw new BusinessException(ResultCode.NO_LOGIN);
-        }
+        RoleEnum userRole = Optional.ofNullable(UserHolder.getUser())
+            .map(UserDTO::getRole)
+            .orElseThrow(() -> new BusinessException(ResultCode.NO_LOGIN, "未登录"));
 
-        RoleEnum userRole = RoleEnum.of(userDTO.getRole());
         /*拥有任意权限即通过*/
         if (!CollectionUtils.isEmpty(anyRoleList) && !anyRoleList.contains(userRole)) {
             throw new BusinessException(ResultCode.NO_AUTH);

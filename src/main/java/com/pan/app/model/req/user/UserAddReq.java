@@ -1,5 +1,7 @@
 package com.pan.app.model.req.user;
 
+import com.pan.app.model.enums.user.GenderEnum;
+import com.pan.app.model.enums.user.RoleEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,12 +16,12 @@ public class UserAddReq implements Serializable {
     /**
      * 用户昵称
      */
-    private String username;
+    private String name;
 
     /**
      * 账号
      */
-    private String account;
+    private String username;
 
     /**
      * 用户头像
@@ -29,12 +31,12 @@ public class UserAddReq implements Serializable {
     /**
      * 性别
      */
-    private Integer gender;
+    private GenderEnum gender;
 
     /**
      * 用户角色：user / admin
      */
-    private Integer role;
+    private RoleEnum role;
 
     /**
      * 密码

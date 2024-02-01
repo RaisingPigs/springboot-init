@@ -1,6 +1,8 @@
 package com.pan.app.model.dto.user;
 
 import com.pan.app.common.entity.BaseEntity;
+import com.pan.app.model.enums.user.GenderEnum;
+import com.pan.app.model.enums.user.RoleEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,11 +22,11 @@ public class UserDTO extends BaseEntity {
     /**
      * 用户昵称
      */
-    private String username;
+    private String name;
     /**
      * 账号
      */
-    private String account;
+    private String username;
     /**
      * 用户头像
      */
@@ -32,6 +34,6 @@ public class UserDTO extends BaseEntity {
     /**
      * 性别
      */
-    private Integer gender;
-    private Integer role;
+    private GenderEnum gender;
+    private RoleEnum role;
 }

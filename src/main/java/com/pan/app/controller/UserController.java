@@ -9,6 +9,8 @@ import com.pan.app.common.resp.ResultCode;
 import com.pan.app.common.resp.ResultUtils;
 import com.pan.app.constant.PageConstant;
 import com.pan.app.exception.BusinessException;
+import com.pan.app.model.converter.user.UserConverter;
+import com.pan.app.model.converter.user.UserVOConverter;
 import com.pan.app.model.dto.user.UserDTO;
 import com.pan.app.model.entity.User;
 import com.pan.app.model.req.user.*;
@@ -16,11 +18,13 @@ import com.pan.app.model.vo.user.UserVO;
 import com.pan.app.service.UserService;
 import com.pan.app.utils.UserHolder;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -28,6 +32,7 @@ import java.util.List;
  * @author: Mr.Pan
  * @create: 2023-02-21 16:48
  **/
+@Validated
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -36,36 +41,36 @@ public class UserController {
 
     @PostMapping("/regist")
     public BaseResponse<Long> userRegist(
-        @RequestBody UserRegistReq userRegistReq) {
+        @RequestBody @Validated UserRegistReq userRegistReq) {
         if (userRegistReq == null) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
 
-        String account = userRegistReq.getAccount();
+        String username = userRegistReq.getUsername();
         String password = userRegistReq.getPassword();
         String checkPassword = userRegistReq.getCheckPassword();
-        if (StringUtils.isAnyBlank(account, password, checkPassword)) {
+        if (StringUtils.isAnyBlank(username, password, checkPassword)) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
 
-        long id = userService.userRegist(account, password, checkPassword);
+        long id = userService.userRegist(username, password, checkPassword);
         return ResultUtils.success(id);
     }
 
     @PostMapping("/login")
     public BaseResponse<UserVO> userLogin(
-        @RequestBody UserLoginReq userLoginReq,
+        @RequestBody @Validated UserLoginReq userLoginReq,
         HttpServletRequest request) {
         if (userLoginReq == null) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
-        String account = userLoginReq.getAccount();
+        String username = userLoginReq.getUsername();
         String password = userLoginReq.getPassword();
-        if (StringUtils.isAnyBlank(account, password)) {
+        if (StringUtils.isAnyBlank(username, password)) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
 
-        UserVO userVo = userService.userLogin(account, password, request);
+        UserVO userVo = userService.userLogin(username, password, request);
 
         return ResultUtils.success(userVo);
     }
@@ -83,8 +88,7 @@ public class UserController {
     @GetMapping("/get/login")
     public BaseResponse<UserVO> getLoginUser() {
         UserDTO userDTO = UserHolder.getUser();
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(userDTO, userVO);
+        UserVO userVO = UserVOConverter.INSTANCE.toUserVO(userDTO);
 
         return ResultUtils.success(userVO);
     }
@@ -98,11 +102,10 @@ public class UserController {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
 
-        User user = new User();
-        BeanUtils.copyProperties(userAddReq, user);
+        User user = UserConverter.INSTANCE.toUser(userAddReq);
 
         userService.validUser(user, true);
-        boolean save = userService.save(user);
+        boolean save = userService.saveUser(user);
         if (!save) {
             throw new BusinessException(ResultCode.SAVE_ERR);
         }
@@ -140,8 +143,7 @@ public class UserController {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
 
-        User user = new User();
-        BeanUtils.copyProperties(userUpdateReq, user);
+        User user = UserConverter.INSTANCE.toUser(userUpdateReq);
         userService.validUser(user, false);
 
         User oldUser = userService.getById(user.getId());
@@ -159,10 +161,11 @@ public class UserController {
 
     @AuthCheck
     @GetMapping("/get/{id}")
-    public BaseResponse<User> getUserById(@PathVariable("id") long id) {
-        if (id <= 0) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
-        }
+    public BaseResponse<User> getUserById(
+        @PathVariable("id")
+        @NotNull(message = "参数异常")
+        @Min(value = 1, message = "id不正确")
+        Long id) {
 
         User user = userService.getById(id);
         return ResultUtils.success(user);
@@ -172,12 +175,12 @@ public class UserController {
     @GetMapping("/list")
     public BaseResponse<List<User>> listUser(
         UserQueryReq userQueryReq) {
-        User userQuery = new User();
+        User user = null;
         if (userQueryReq != null) {
-            BeanUtils.copyProperties(userQueryReq, userQuery);
+            user = UserConverter.INSTANCE.toUser(userQueryReq);
         }
 
-        QueryWrapper<User> wrapper = new QueryWrapper<>(userQuery);
+        QueryWrapper<User> wrapper = new QueryWrapper<>(user);
         List<User> userList = userService.list(wrapper);
         return ResultUtils.success(userList);
     }
@@ -195,16 +198,15 @@ public class UserController {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
 
-        User userQuery = new User();
-        BeanUtils.copyProperties(userQueryReq, userQuery);
+        User user = UserConverter.INSTANCE.toUser(userQueryReq);
 
         long pagenum = userQueryReq.getPagenum();
         long pagesize = userQueryReq.getPagesize();
         String sortField = userQueryReq.getSortField();
         boolean sortOrder = userQueryReq.isSortOrder();
-        String username = userQuery.getUsername();
+        String username = user.getName();
 
-        QueryWrapper<User> wrapper = new QueryWrapper<>(userQuery);
+        QueryWrapper<User> wrapper = new QueryWrapper<>(user);
         /*使用userName字段做模糊查询*/
         wrapper.like(StringUtils.isNotBlank(username), "username", username);
         wrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder, sortField);

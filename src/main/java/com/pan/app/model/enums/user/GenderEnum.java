@@ -1,5 +1,8 @@
 package com.pan.app.model.enums.user;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.pan.app.model.enums.BaseEnum;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -15,7 +18,7 @@ import java.util.stream.Collectors;
  * @create: 2023-02-21 21:41
  **/
 @Getter
-public enum GenderEnum {
+public enum GenderEnum implements BaseEnum {
     MALE(0, "男"),
     FEMALE(1, "女");
 
@@ -25,6 +28,9 @@ public enum GenderEnum {
             Function.identity(),
             (enum1, enum2) -> enum1
         ));
+    
+    @EnumValue
+    @JsonValue
     private final int code;
     private final String desc;
 

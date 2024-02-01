@@ -1,5 +1,8 @@
 package com.pan.app.model.enums.user;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.pan.app.model.enums.BaseEnum;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -15,7 +18,7 @@ import java.util.stream.Collectors;
  * @create: 2024-01-31 18:19
  **/
 @Getter
-public enum RoleEnum {
+public enum RoleEnum implements BaseEnum {
     ADMIN(0, "管理员"),
     USER(1, "用户");
 
@@ -26,6 +29,9 @@ public enum RoleEnum {
             Function.identity(),
             (enum1, enum2) -> enum1
         ));
+    
+    @EnumValue
+    @JsonValue
     private final int code;
     private final String desc;
 

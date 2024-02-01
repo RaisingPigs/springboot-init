@@ -26,6 +26,10 @@ public class BaseEntity implements Serializable {
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
+    @ApiModelProperty("更新者ID")
+    @TableField(value = "updater_id", fill = FieldFill.INSERT)
+    private Long updaterId;
+
     @ApiModelProperty("更新时间")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;

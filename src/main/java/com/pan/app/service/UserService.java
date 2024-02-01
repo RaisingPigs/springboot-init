@@ -14,11 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserService extends IService<User> {
     void validUser(User user, boolean add);
 
-    UserVO userLogin(String account, String password, HttpServletRequest request);
+    UserVO userLogin(String username, String password, HttpServletRequest request);
 
     boolean userLogout(HttpServletRequest request);
 
-    long userRegist(String account, String password, String checkPassword);
+    long userRegist(String username, String password, String checkPassword);
 
     boolean isAdmin();
+
+    boolean saveUser(User user);
 }

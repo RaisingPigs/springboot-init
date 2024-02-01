@@ -27,12 +27,18 @@ public class User extends BaseEntity {
     /**
      * 用户昵称
      */
-    private String username;
+    @TableField("name")
+    private String name;
     /**
      * 账号
      */
-    @TableField("account")
-    private String account;
+    @TableField("username")
+    private String username;
+    /**
+     * 密码
+     */
+    @TableField("password")
+    private String password;
     /**
      * 用户头像
      */
@@ -41,27 +47,23 @@ public class User extends BaseEntity {
     /**
      * 性别
      */
-    private Integer gender;
+    @TableField("gender")
+    private GenderEnum gender;
     /**
      * 用户角色：user / admin
      */
     @TableField("role")
-    private Integer role;
-    /**
-     * 密码
-     */
-    @TableField("password")
-    private String password;
+    private RoleEnum role;
 
     public User() {
     }
 
-    public User(String username, String account, String password) {
+    public User(String name, String username, String password) {
+        this.name = name;
         this.username = username;
-        this.account = account;
         this.password = password;
         this.avatar = "";
-        this.gender = GenderEnum.MALE.getCode();
-        this.role = RoleEnum.USER.getCode();
+        this.gender = GenderEnum.MALE;
+        this.role = RoleEnum.USER;
     }
 }

@@ -1,6 +1,7 @@
 package com.pan.app.utils;
 
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,7 @@ public class SpringContextUtils implements ApplicationContextAware {
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
+    public void setApplicationContext(@NotNull ApplicationContext applicationContext) {
         APP_CONTAINER.setApplicationContext(applicationContext);
     }
 

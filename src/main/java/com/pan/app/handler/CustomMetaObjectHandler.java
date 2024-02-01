@@ -22,6 +22,8 @@ import java.util.Optional;
 public class CustomMetaObjectHandler implements MetaObjectHandler {
     private static final String CREATOR_ID_FIELD = "creatorId";
     private static final String CREATE_TIME_FIELD = "createTime";
+    private static final String UPDATER_ID_FIELD = "updaterId";
+
     private static final String UPDATE_TIME_FIELD = "updateTime";
 
 
@@ -40,12 +42,22 @@ public class CustomMetaObjectHandler implements MetaObjectHandler {
         if (metaObject.hasSetter(CREATOR_ID_FIELD)) {
             this.strictInsertFill(metaObject, CREATOR_ID_FIELD, Long.class, userId);
         }
+        if (metaObject.hasSetter(UPDATER_ID_FIELD)) {
+            this.strictInsertFill(metaObject, UPDATER_ID_FIELD, Long.class, userId);
+        }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         if (metaObject.hasSetter(UPDATE_TIME_FIELD)) {
             this.setFieldValByName(UPDATE_TIME_FIELD, LocalDateTime.now(), metaObject);
+        }
+
+        Long userId = Optional.ofNullable(UserHolder.getUser())
+            .map(UserDTO::getId)
+            .orElseThrow(() -> new BusinessException(ResultCode.NO_AUTH));
+        if (metaObject.hasSetter(UPDATER_ID_FIELD)) {
+            this.strictInsertFill(metaObject, UPDATER_ID_FIELD, Long.class, userId);
         }
     }
 }

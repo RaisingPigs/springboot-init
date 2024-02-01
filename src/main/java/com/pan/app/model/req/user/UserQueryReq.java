@@ -1,6 +1,8 @@
 package com.pan.app.model.req.user;
 
 import com.pan.app.common.req.PageRequest;
+import com.pan.app.model.enums.user.GenderEnum;
+import com.pan.app.model.enums.user.RoleEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -23,11 +25,11 @@ public class UserQueryReq extends PageRequest implements Serializable {
     /**
      * 用户昵称
      */
-    private String username;
+    private String name;
     /**
      * 账号
      */
-    private String account;
+    private String username;
     /**
      * 用户头像
      */
@@ -35,20 +37,16 @@ public class UserQueryReq extends PageRequest implements Serializable {
     /**
      * 性别
      */
-    private Integer gender;
+    private GenderEnum gender;
     /**
      * 用户角色：user / admin
      */
-    private Integer role;
-    /**
-     * 密码
-     */
-    private String password;
+    private RoleEnum role;
 
     private Long creatorId;
 
     private LocalDateTime createTime;
-    
+    private Long updaterId;
     private LocalDateTime updateTime;
 
 }
