@@ -1,8 +1,9 @@
 package com.pan.app.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.pan.app.annotation.AuthCheck;
 import com.pan.app.common.req.DeleteRequest;
 import com.pan.app.common.resp.BaseResponse;
 import com.pan.app.common.resp.ResultCode;
@@ -16,13 +17,12 @@ import com.pan.app.model.entity.User;
 import com.pan.app.model.req.user.*;
 import com.pan.app.model.vo.user.UserVO;
 import com.pan.app.service.UserService;
-import com.pan.app.utils.UserHolder;
+import com.pan.app.utils.AuthUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -58,9 +58,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public BaseResponse<UserVO> userLogin(
-        @RequestBody @Validated UserLoginReq userLoginReq,
-        HttpServletRequest request) {
+    public BaseResponse<String> userLogin(
+        @RequestBody @Validated UserLoginReq userLoginReq) {
         if (userLoginReq == null) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
@@ -70,31 +69,29 @@ public class UserController {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
 
-        UserVO userVo = userService.userLogin(username, password, request);
+        String token = userService.userLogin(username, password);
 
-        return ResultUtils.success(userVo);
+        return ResultUtils.success(token);
     }
 
+    @SaCheckLogin
     @PostMapping("/logout")
-    public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
-        if (request == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
-        }
-
-        boolean res = userService.userLogout(request);
-        return ResultUtils.success(res);
+    public BaseResponse<Boolean> userLogout() {
+        userService.userLogout();
+        return ResultUtils.success(true);
     }
 
-    @GetMapping("/get/login")
+    @SaCheckLogin
+    @GetMapping("/info")
     public BaseResponse<UserVO> getLoginUser() {
-        UserDTO userDTO = UserHolder.getUser();
+        UserDTO userDTO = AuthUtils.getLoginUser();
         UserVO userVO = UserVOConverter.INSTANCE.toUserVO(userDTO);
 
         return ResultUtils.success(userVO);
     }
 
     //region 增删改查
-    @AuthCheck
+    @SaCheckRole("admin")
     @PostMapping("/add")
     public BaseResponse<Long> addUser(
         @RequestBody UserAddReq userAddReq) {
@@ -113,7 +110,7 @@ public class UserController {
         return ResultUtils.success(user.getId());
     }
 
-    @AuthCheck
+    @SaCheckRole("admin")
     @DeleteMapping("/delete")
     public BaseResponse<Boolean> deleteUser(
         @RequestBody DeleteRequest deleteRequest) {
@@ -135,7 +132,7 @@ public class UserController {
         return ResultUtils.success(true);
     }
 
-    @AuthCheck
+    @SaCheckRole("admin")
     @PutMapping("/update")
     public BaseResponse<Boolean> updateUser(
         @RequestBody UserUpdateReq userUpdateReq) {
@@ -159,7 +156,7 @@ public class UserController {
         return ResultUtils.success(true);
     }
 
-    @AuthCheck
+    @SaCheckRole("admin")
     @GetMapping("/get/{id}")
     public BaseResponse<User> getUserById(
         @PathVariable("id")
@@ -171,7 +168,7 @@ public class UserController {
         return ResultUtils.success(user);
     }
 
-    @AuthCheck
+    @SaCheckRole("admin")
     @GetMapping("/list")
     public BaseResponse<List<User>> listUser(
         UserQueryReq userQueryReq) {
@@ -185,7 +182,7 @@ public class UserController {
         return ResultUtils.success(userList);
     }
 
-    @AuthCheck
+    @SaCheckRole("admin")
     @GetMapping("/list/page")
     public BaseResponse<Page<User>> listUserByPage(
         UserQueryReq userQueryReq) {

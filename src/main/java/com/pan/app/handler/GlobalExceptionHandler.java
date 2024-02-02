@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public BaseResponse<?> businessExceptionHandler(BusinessException e) {
         log.error("全局异常处理BusinessException: [{}]", e.getMessage(), e);
-        return ResultUtils.failed(e.getCode(), e.getMessage(), e.getDesc());
+        return ResultUtils.failed(e);
     }
 
     /**
@@ -77,6 +77,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public BaseResponse<?> exceptionHandler(Exception e) {
         log.error("全局异常处理Exception: [{}]", e.getMessage(), e);
-        return ResultUtils.failed(ResultCode.SYSTEM_ERR, e.getMessage(), "");
+        return ResultUtils.failed(ResultCode.SYSTEM_ERR, e.getMessage());
     }
 }

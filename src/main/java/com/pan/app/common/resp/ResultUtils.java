@@ -1,5 +1,7 @@
 package com.pan.app.common.resp;
 
+import com.pan.app.exception.BusinessException;
+
 /**
  * @description:
  * @author: Mr.Pan
@@ -14,15 +16,11 @@ public class ResultUtils {
         return new BaseResponse<>(resultCode);
     }
 
-    public static <T> BaseResponse<T> failed(ResultCode resultCode, String msg, String desc) {
-        return new BaseResponse<>(resultCode, msg, desc);
+    public static <T> BaseResponse<T> failed(ResultCode resultCode, String msg) {
+        return new BaseResponse<>(resultCode, msg);
     }
 
-    public static <T> BaseResponse<T> failed(ResultCode resultCode, String desc) {
-        return new BaseResponse<>(resultCode, desc);
-    }
-
-    public static <T> BaseResponse<T> failed(int code, String msg, String desc) {
-        return new BaseResponse<>(code, null, msg, desc);
+    public static <T> BaseResponse<T> failed(BusinessException e) {
+        return new BaseResponse<>(e);
     }
 }

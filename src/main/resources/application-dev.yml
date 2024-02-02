@@ -14,23 +14,6 @@ spring:
     password: root
     type: com.alibaba.druid.pool.DruidDataSource
 
-  redis:
-    host: 192.168.79.130
-    port: 6379
-    password: root     #密码
-    database: 0
-    timeout: 10000    #访问超时时间
-    lettuce: #lettuce依赖commons-pool2, 所以要导入commons-pool2
-      pool:
-        max-active: 10  #连接池最大连接数  
-        max-wait: 5000  #连接池最大等待阻塞时间
-        max-idle: 10     #连接池中最大空闲连接数
-        min-idle: 2     #连接池中最小空闲数
-
-  session:
-    store-type: redis
-    timeout: 1800 # session失效时间(秒)
-
   # 配置日期格式化
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss  #时间戳统一转换为指定格式
@@ -51,13 +34,29 @@ mybatis-plus:
     db-config:
       logic-delete-field: deleted # 全局逻辑删除的实体字段名(1-已删除 0-未删除)
 
+# knife4j的增强配置
 knife4j:
-  # 开启增强配置 
   enable: true
-  # 为true则开启生产环境屏蔽
   production: false
   basic:
     enable: true # 此项设置为true表示开启账号密码验证
     username: admin # enable为true时对应的登陆账号
-    password: admin # enable为true时对应的登陆密码
-      
+    password: admin # enable为true时对应的登陆密码    
+  setting:
+    language: zh_cn
+
+sa-token:
+  # token 名称（同时也是 cookie 名称）
+  token-name: PanToken
+  # token 永久有效期, 7天(604800秒)后，token必定过期，无法继续使用
+  timeout: 604800
+  # token 最低活跃频率, 超过30分钟(1800秒)没有请求, token过期
+  active-timeout: 1800
+  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
+  is-concurrent: true
+  # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）
+  is-share: true
+  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
+  token-style: simple-uuid
+  # 是否输出操作日志 
+  is-log: true

@@ -1,16 +1,13 @@
 package com.pan.app.handler;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.pan.app.common.resp.ResultCode;
-import com.pan.app.exception.BusinessException;
-import com.pan.app.model.dto.user.UserDTO;
-import com.pan.app.utils.UserHolder;
+import com.pan.app.utils.AuthUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * Mybatis Plus允许在插入或者更新的时候
@@ -36,12 +33,15 @@ public class CustomMetaObjectHandler implements MetaObjectHandler {
             this.setFieldValByName(UPDATE_TIME_FIELD, LocalDateTime.now(), metaObject);
         }
 
-        Long userId = Optional.ofNullable(UserHolder.getUser())
-            .map(UserDTO::getId)
-            .orElseThrow(() -> new BusinessException(ResultCode.NO_AUTH));
+        Long userId = 0L;
+        if (StpUtil.isLogin()) {
+            userId = AuthUtils.getLoginUser().getId();
+        }
+
         if (metaObject.hasSetter(CREATOR_ID_FIELD)) {
             this.strictInsertFill(metaObject, CREATOR_ID_FIELD, Long.class, userId);
         }
+
         if (metaObject.hasSetter(UPDATER_ID_FIELD)) {
             this.strictInsertFill(metaObject, UPDATER_ID_FIELD, Long.class, userId);
         }
@@ -52,10 +52,11 @@ public class CustomMetaObjectHandler implements MetaObjectHandler {
         if (metaObject.hasSetter(UPDATE_TIME_FIELD)) {
             this.setFieldValByName(UPDATE_TIME_FIELD, LocalDateTime.now(), metaObject);
         }
+        Long userId = 0L;
+        if (StpUtil.isLogin()) {
+            userId = AuthUtils.getLoginUser().getId();
+        }
 
-        Long userId = Optional.ofNullable(UserHolder.getUser())
-            .map(UserDTO::getId)
-            .orElseThrow(() -> new BusinessException(ResultCode.NO_AUTH));
         if (metaObject.hasSetter(UPDATER_ID_FIELD)) {
             this.strictInsertFill(metaObject, UPDATER_ID_FIELD, Long.class, userId);
         }

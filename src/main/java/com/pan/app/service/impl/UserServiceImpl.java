@@ -1,30 +1,26 @@
 package com.pan.app.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.pan.app.common.resp.ResultCode;
-import com.pan.app.constant.RedisConstant;
 import com.pan.app.exception.BusinessException;
 import com.pan.app.mapper.UserMapper;
 import com.pan.app.model.converter.user.UserDTOConverter;
-import com.pan.app.model.converter.user.UserVOConverter;
 import com.pan.app.model.dto.user.UserDTO;
 import com.pan.app.model.entity.User;
 import com.pan.app.model.enums.user.GenderEnum;
 import com.pan.app.model.enums.user.RoleEnum;
-import com.pan.app.model.vo.user.UserVO;
 import com.pan.app.service.UserService;
-import com.pan.app.utils.UserHolder;
+import com.pan.app.utils.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author Mr.Pan
@@ -111,10 +107,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public UserVO userLogin(
-        String username,
-        String password,
-        HttpServletRequest request) {
+    public String userLogin(String username, String password) {
         if (StringUtils.isAnyBlank(username, password)) {
             throw new BusinessException(ResultCode.PARAMS_ERR, "用户名密码不能为空");
         }
@@ -134,30 +127,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         UserDTO userDTO = UserDTOConverter.INSTANCE.toUserDTO(user);
-        request.getSession().setAttribute(RedisConstant.USER_LOGIN_STATE, userDTO);
+        StpUtil.login(user.getId());
+        AuthUtils.setLoginUser(userDTO);
 
-        return UserVOConverter.INSTANCE.toUserVO(user);
+        return StpUtil.getTokenValue();
     }
 
     @Override
-    public boolean userLogout(HttpServletRequest request) {
-        if (request == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
-        }
-        if (UserHolder.getUser() == null) {
-            throw new BusinessException(ResultCode.NULL_ERR, "未登录");
-        }
-
-        request.getSession().removeAttribute(RedisConstant.USER_LOGIN_STATE);
-        return true;
+    public void userLogout() {
+        StpUtil.logout();
     }
 
     @Override
     public boolean isAdmin() {
-        RoleEnum userRole = Optional.ofNullable(UserHolder.getUser())
-            .map(UserDTO::getRole)
-            .orElseThrow(() -> new BusinessException(ResultCode.NO_LOGIN, "未登录"));
-
+        RoleEnum userRole = AuthUtils.getLoginUser().getRole();
         return Objects.equals(userRole, RoleEnum.ADMIN);
     }
 

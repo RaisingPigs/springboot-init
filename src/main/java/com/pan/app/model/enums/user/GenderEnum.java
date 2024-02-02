@@ -30,8 +30,8 @@ public enum GenderEnum implements BaseEnum {
         ));
     
     @EnumValue
-    @JsonValue
     private final int code;
+    @JsonValue
     private final String desc;
 
 

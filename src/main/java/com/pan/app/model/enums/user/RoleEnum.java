@@ -19,9 +19,8 @@ import java.util.stream.Collectors;
  **/
 @Getter
 public enum RoleEnum implements BaseEnum {
-    ADMIN(0, "管理员"),
-    USER(1, "用户");
-
+    ADMIN(0, "admin"),
+    USER(1, "user");
 
     private static final Map<Integer, RoleEnum> VALUE_MAP = Arrays.stream(values())
         .collect(Collectors.toMap(
@@ -29,10 +28,10 @@ public enum RoleEnum implements BaseEnum {
             Function.identity(),
             (enum1, enum2) -> enum1
         ));
-    
+
     @EnumValue
-    @JsonValue
     private final int code;
+    @JsonValue
     private final String desc;
 
     RoleEnum(int code, String desc) {
