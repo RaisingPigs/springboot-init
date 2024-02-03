@@ -37,11 +37,6 @@ mybatis-plus:
 # knife4j的增强配置
 knife4j:
   enable: true
-  production: false
-  basic:
-    enable: true # 此项设置为true表示开启账号密码验证
-    username: admin # enable为true时对应的登陆账号
-    password: admin # enable为true时对应的登陆密码    
   setting:
     language: zh_cn
 

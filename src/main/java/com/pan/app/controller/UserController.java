@@ -3,6 +3,7 @@ package com.pan.app.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pan.app.common.req.DeleteRequest;
 import com.pan.app.common.resp.BaseResponse;
@@ -26,6 +27,7 @@ import javax.annotation.Resource;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -170,7 +172,7 @@ public class UserController {
 
     @SaCheckRole("admin")
     @GetMapping("/list")
-    public BaseResponse<List<User>> listUser(
+    public BaseResponse<List<UserVO>> listUser(
         UserQueryReq userQueryReq) {
         User user = null;
         if (userQueryReq != null) {
@@ -179,12 +181,14 @@ public class UserController {
 
         QueryWrapper<User> wrapper = new QueryWrapper<>(user);
         List<User> userList = userService.list(wrapper);
-        return ResultUtils.success(userList);
+
+        List<UserVO> userVOList = userList.stream().map(UserVOConverter.INSTANCE::toUserVO).collect(Collectors.toList());
+        return ResultUtils.success(userVOList);
     }
 
     @SaCheckRole("admin")
     @GetMapping("/list/page")
-    public BaseResponse<Page<User>> listUserByPage(
+    public BaseResponse<IPage<UserVO>> listUserByPage(
         UserQueryReq userQueryReq) {
         if (userQueryReq == null) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
@@ -201,15 +205,19 @@ public class UserController {
         long pagesize = userQueryReq.getPagesize();
         String sortField = userQueryReq.getSortField();
         boolean sortOrder = userQueryReq.isSortOrder();
-        String username = user.getName();
+        String name = user.getName();
+        String username = user.getUsername();
 
         QueryWrapper<User> wrapper = new QueryWrapper<>(user);
         /*使用userName字段做模糊查询*/
+        wrapper.like(StringUtils.isNotBlank(name), "name", name);
         wrapper.like(StringUtils.isNotBlank(username), "username", username);
         wrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder, sortField);
-        Page<User> page = userService.page(new Page<>(pagenum, pagesize), wrapper);
 
-        return ResultUtils.success(page);
+        IPage<User> userPage = userService.page(new Page<>(pagenum, pagesize), wrapper);
+        IPage<UserVO> userVOPage = userPage.convert(UserVOConverter.INSTANCE::toUserVO);
+
+        return ResultUtils.success(userVOPage);
     }
     //endregion
 }
