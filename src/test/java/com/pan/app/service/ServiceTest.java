@@ -3,9 +3,6 @@ package com.pan.app.service;
 import com.pan.app.constant.UserConstant;
 import com.pan.app.utils.AuthUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.DigestUtils;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * @description:

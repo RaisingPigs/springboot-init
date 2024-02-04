@@ -8,7 +8,6 @@ import com.pan.app.common.resp.BaseResponse;
 import com.pan.app.common.resp.ResultCode;
 import com.pan.app.common.resp.ResultUtils;
 import com.pan.app.constant.PageConstant;
-import com.pan.app.constant.UserConstant;
 import com.pan.app.exception.BusinessException;
 import com.pan.app.model.converter.user.UserConverter;
 import com.pan.app.model.converter.user.UserVOConverter;
@@ -18,7 +17,6 @@ import com.pan.app.model.req.user.UserQueryReq;
 import com.pan.app.model.req.user.UserUpdateReq;
 import com.pan.app.model.vo.user.UserVO;
 import com.pan.app.service.UserService;
-import com.pan.app.utils.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -53,7 +51,7 @@ public class UserController {
 
         User user = UserConverter.INSTANCE.toUser(userAddReq);
         userService.validUser(user, true);
-        
+
         boolean save = userService.saveUser(user);
         if (!save) {
             throw new BusinessException(ResultCode.SAVE_ERR);

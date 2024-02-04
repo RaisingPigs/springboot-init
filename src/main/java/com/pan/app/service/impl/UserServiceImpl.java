@@ -14,9 +14,7 @@ import com.pan.app.utils.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 /**
@@ -51,7 +49,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (StringUtils.isNotBlank(name) && name.length() > 16) {
             throw new BusinessException(ResultCode.PARAMS_ERR, "用户名过长");
         }
-        
+
         if (ObjectUtil.hasNull(gender, role)) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
