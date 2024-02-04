@@ -1,32 +1,33 @@
 package com.pan.app.controller;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.pan.app.common.req.DeleteRequest;
 import com.pan.app.common.resp.BaseResponse;
 import com.pan.app.common.resp.ResultCode;
 import com.pan.app.common.resp.ResultUtils;
 import com.pan.app.constant.PageConstant;
+import com.pan.app.constant.UserConstant;
 import com.pan.app.exception.BusinessException;
 import com.pan.app.model.converter.user.UserConverter;
 import com.pan.app.model.converter.user.UserVOConverter;
-import com.pan.app.model.dto.user.UserDTO;
 import com.pan.app.model.entity.User;
-import com.pan.app.model.req.user.*;
+import com.pan.app.model.req.user.UserAddReq;
+import com.pan.app.model.req.user.UserQueryReq;
+import com.pan.app.model.req.user.UserUpdateReq;
 import com.pan.app.model.vo.user.UserVO;
 import com.pan.app.service.UserService;
 import com.pan.app.utils.AuthUtils;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -37,63 +38,12 @@ import java.util.stream.Collectors;
 @Validated
 @RestController
 @RequestMapping("/user")
+@RequiredArgsConstructor
+@SaCheckRole("admin")
 public class UserController {
-    @Resource
-    private UserService userService;
-
-    @PostMapping("/regist")
-    public BaseResponse<Long> userRegist(
-        @RequestBody @Validated UserRegistReq userRegistReq) {
-        if (userRegistReq == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
-        }
-
-        String username = userRegistReq.getUsername();
-        String password = userRegistReq.getPassword();
-        String checkPassword = userRegistReq.getCheckPassword();
-        if (StringUtils.isAnyBlank(username, password, checkPassword)) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
-        }
-
-        long id = userService.userRegist(username, password, checkPassword);
-        return ResultUtils.success(id);
-    }
-
-    @PostMapping("/login")
-    public BaseResponse<String> userLogin(
-        @RequestBody @Validated UserLoginReq userLoginReq) {
-        if (userLoginReq == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
-        }
-        String username = userLoginReq.getUsername();
-        String password = userLoginReq.getPassword();
-        if (StringUtils.isAnyBlank(username, password)) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
-        }
-
-        String token = userService.userLogin(username, password);
-
-        return ResultUtils.success(token);
-    }
-
-    @SaCheckLogin
-    @PostMapping("/logout")
-    public BaseResponse<Boolean> userLogout() {
-        userService.userLogout();
-        return ResultUtils.success(true);
-    }
-
-    @SaCheckLogin
-    @GetMapping("/info")
-    public BaseResponse<UserVO> getLoginUser() {
-        UserDTO userDTO = AuthUtils.getLoginUser();
-        UserVO userVO = UserVOConverter.INSTANCE.toUserVO(userDTO);
-
-        return ResultUtils.success(userVO);
-    }
+    private final UserService userService;
 
     //region 增删改查
-    @SaCheckRole("admin")
     @PostMapping("/add")
     public BaseResponse<Long> addUser(
         @RequestBody UserAddReq userAddReq) {
@@ -102,8 +52,8 @@ public class UserController {
         }
 
         User user = UserConverter.INSTANCE.toUser(userAddReq);
-
         userService.validUser(user, true);
+        
         boolean save = userService.saveUser(user);
         if (!save) {
             throw new BusinessException(ResultCode.SAVE_ERR);
@@ -112,15 +62,12 @@ public class UserController {
         return ResultUtils.success(user.getId());
     }
 
-    @SaCheckRole("admin")
-    @DeleteMapping("/delete")
-    public BaseResponse<Boolean> deleteUser(
-        @RequestBody DeleteRequest deleteRequest) {
-        if (deleteRequest == null) {
+    @DeleteMapping("/delete/{id}")
+    public BaseResponse<Void> deleteUser(@PathVariable("id") Long id) {
+        if (Objects.isNull(id) || id <= 0) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
 
-        long id = deleteRequest.getId();
         User oldUser = userService.getById(id);
         if (oldUser == null) {
             throw new BusinessException(ResultCode.NULL_ERR);
@@ -131,12 +78,11 @@ public class UserController {
             throw new BusinessException(ResultCode.DELETE_ERR);
         }
 
-        return ResultUtils.success(true);
+        return ResultUtils.success();
     }
 
-    @SaCheckRole("admin")
     @PutMapping("/update")
-    public BaseResponse<Boolean> updateUser(
+    public BaseResponse<Void> updateUser(
         @RequestBody UserUpdateReq userUpdateReq) {
         if (userUpdateReq == null) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
@@ -155,25 +101,24 @@ public class UserController {
             throw new BusinessException(ResultCode.UPDATE_ERR);
         }
 
-        return ResultUtils.success(true);
+        return ResultUtils.success();
     }
 
-    @SaCheckRole("admin")
     @GetMapping("/get/{id}")
-    public BaseResponse<User> getUserById(
+    public BaseResponse<UserVO> getUserById(
         @PathVariable("id")
         @NotNull(message = "参数异常")
         @Min(value = 1, message = "id不正确")
         Long id) {
 
         User user = userService.getById(id);
-        return ResultUtils.success(user);
+        UserVO userVO = UserVOConverter.INSTANCE.toUserVO(user);
+        return ResultUtils.success(userVO);
     }
 
-    @SaCheckRole("admin")
-    @GetMapping("/list")
+    @PostMapping("/list")
     public BaseResponse<List<UserVO>> listUser(
-        UserQueryReq userQueryReq) {
+        @RequestBody UserQueryReq userQueryReq) {
         User user = null;
         if (userQueryReq != null) {
             user = UserConverter.INSTANCE.toUser(userQueryReq);
@@ -186,27 +131,28 @@ public class UserController {
         return ResultUtils.success(userVOList);
     }
 
-    @SaCheckRole("admin")
-    @GetMapping("/list/page")
+    @PostMapping("/list/page")
     public BaseResponse<IPage<UserVO>> listUserByPage(
-        UserQueryReq userQueryReq) {
+        @RequestBody UserQueryReq userQueryReq) {
         if (userQueryReq == null) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
 
         /*限制爬虫*/
-        if (userQueryReq.getPagesize() > PageConstant.MAX_PAGE_SIZE) {
+        if (userQueryReq.getPageSize() > PageConstant.MAX_PAGE_SIZE) {
             throw new BusinessException(ResultCode.PARAMS_ERR);
         }
 
         User user = UserConverter.INSTANCE.toUser(userQueryReq);
 
-        long pagenum = userQueryReq.getPagenum();
-        long pagesize = userQueryReq.getPagesize();
+        long pageNum = userQueryReq.getPageNum();
+        long pageSize = userQueryReq.getPageSize();
         String sortField = userQueryReq.getSortField();
         boolean sortOrder = userQueryReq.isSortOrder();
         String name = user.getName();
         String username = user.getUsername();
+        user.setName(null);
+        user.setUsername(null);
 
         QueryWrapper<User> wrapper = new QueryWrapper<>(user);
         /*使用userName字段做模糊查询*/
@@ -214,7 +160,7 @@ public class UserController {
         wrapper.like(StringUtils.isNotBlank(username), "username", username);
         wrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder, sortField);
 
-        IPage<User> userPage = userService.page(new Page<>(pagenum, pagesize), wrapper);
+        IPage<User> userPage = userService.page(new Page<>(pageNum, pageSize), wrapper);
         IPage<UserVO> userVOPage = userPage.convert(UserVOConverter.INSTANCE::toUserVO);
 
         return ResultUtils.success(userVOPage);

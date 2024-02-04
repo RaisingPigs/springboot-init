@@ -5,7 +5,9 @@ import com.pan.app.common.resp.ResultCode;
 import com.pan.app.constant.UserConstant;
 import com.pan.app.exception.BusinessException;
 import com.pan.app.model.dto.user.UserDTO;
+import org.springframework.util.DigestUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,5 +34,9 @@ public class AuthUtils {
         }
         
         StpUtil.getSession().set(UserConstant.USER_LOGIN_STATE, userDTO);
+    }
+
+    public static String encryptPassword(String password) {
+        return DigestUtils.md5DigestAsHex((UserConstant.SALT + password).getBytes(StandardCharsets.UTF_8));
     }
 }

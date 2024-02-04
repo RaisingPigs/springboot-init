@@ -13,8 +13,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class SaTokenConfig implements WebMvcConfigurer {
     private static final String[] WHITE_LIST = {
-        "/user/login",
-        "/user/regist"
+        "/sys/login",
+        "/sys/register"
     };
 
     // 注册 Sa-Token 拦截器，打开注解式鉴权功能

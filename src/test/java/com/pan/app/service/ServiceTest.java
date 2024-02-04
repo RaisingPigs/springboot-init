@@ -1,5 +1,7 @@
 package com.pan.app.service;
 
+import com.pan.app.constant.UserConstant;
+import com.pan.app.utils.AuthUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.DigestUtils;
 
@@ -13,7 +15,8 @@ import java.nio.charset.StandardCharsets;
 public class ServiceTest {
     @Test
     void test() {
-        String encryptPassword = DigestUtils.md5DigestAsHex(("pan" + "admin").getBytes(StandardCharsets.UTF_8));
+        String encryptPassword = AuthUtils.encryptPassword(UserConstant.DEFAULT_PASSWORD);
+
         System.out.println(encryptPassword);
     }
 }

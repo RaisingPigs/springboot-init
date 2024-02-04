@@ -1,5 +1,9 @@
 package com.pan.app.handler;
 
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotPermissionException;
+import cn.dev33.satoken.exception.NotRoleException;
+import cn.dev33.satoken.exception.SaTokenException;
 import com.pan.app.common.resp.BaseResponse;
 import com.pan.app.common.resp.ResultCode;
 import com.pan.app.common.resp.ResultUtils;
@@ -30,6 +34,23 @@ public class GlobalExceptionHandler {
     public BaseResponse<?> businessExceptionHandler(BusinessException e) {
         log.error("全局异常处理BusinessException: [{}]", e.getMessage(), e);
         return ResultUtils.failed(e);
+    }
+
+    @ExceptionHandler(SaTokenException.class)
+    public BaseResponse<?> businessExceptionHandler(SaTokenException e) {
+        // 不同异常返回不同状态码
+        if (e instanceof NotLoginException) {               // 如果是未登录异常
+            return ResultUtils.failed(ResultCode.NO_LOGIN);
+        }
+        if (e instanceof NotRoleException) {         // 如果是角色异常
+            return ResultUtils.failed(ResultCode.NO_AUTH);
+        }
+        if (e instanceof NotPermissionException) {   // 如果是权限异常
+            return ResultUtils.failed(ResultCode.NO_AUTH);
+        }
+
+        // 其他异常
+        return ResultUtils.failed(ResultCode.NO_AUTH);
     }
 
     /**

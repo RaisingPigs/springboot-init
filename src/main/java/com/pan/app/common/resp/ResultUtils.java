@@ -8,6 +8,9 @@ import com.pan.app.exception.BusinessException;
  * @create: 2022-10-07 14:46
  **/
 public class ResultUtils {
+    public static <T> BaseResponse<T> success() {
+        return new BaseResponse<>(ResultCode.SUCCESS);
+    }
     public static <T> BaseResponse<T> success(T data) {
         return new BaseResponse<>(ResultCode.SUCCESS, data);
     }

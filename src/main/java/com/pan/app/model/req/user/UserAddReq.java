@@ -37,11 +37,6 @@ public class UserAddReq implements Serializable {
      * 用户角色：user / admin
      */
     private RoleEnum role;
-
-    /**
-     * 密码
-     */
-    private String password;
-
+    
     private static final long serialVersionUID = 1L;
 }

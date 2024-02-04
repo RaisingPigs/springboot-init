@@ -11,12 +11,6 @@ import com.pan.app.model.entity.User;
 public interface UserService extends IService<User> {
     void validUser(User user, boolean add);
 
-    String userLogin(String username, String password);
-
-    void userLogout();
-
-    long userRegist(String username, String password, String checkPassword);
-
     boolean isAdmin();
 
     boolean saveUser(User user);

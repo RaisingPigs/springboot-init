@@ -1,6 +1,6 @@
 package com.pan.app.model.req.user;
 
-import com.pan.app.common.req.PageRequest;
+import com.pan.app.common.req.PageReq;
 import com.pan.app.model.enums.user.GenderEnum;
 import com.pan.app.model.enums.user.RoleEnum;
 import lombok.Data;
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  **/
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UserQueryReq extends PageRequest implements Serializable {
+public class UserQueryReq extends PageReq implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
      * id

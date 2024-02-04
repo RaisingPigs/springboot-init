@@ -8,10 +8,10 @@ import lombok.Data;
  * @create: 2023-02-21 15:50
  **/
 @Data
-public class PageRequest {
-    private long pagenum = 1;
+public class PageReq {
+    private long pageNum = 1;
 
-    private long pagesize = 5;
+    private long pageSize = 5;
 
     private String sortField;
 

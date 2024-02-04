@@ -38,8 +38,4 @@ public class UserUpdateReq implements Serializable {
      * 用户角色：user / admin
      */
     private RoleEnum role;
-    /**
-     * 密码
-     */
-    private String password;
 }
