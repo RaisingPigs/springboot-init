@@ -2,7 +2,7 @@ package com.pan.app.handler;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.pan.app.utils.AuthUtils;
+import com.pan.app.util.AuthUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;

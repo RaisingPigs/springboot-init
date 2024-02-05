@@ -1,7 +1,7 @@
 package com.pan.app.service;
 
 import com.pan.app.constant.UserConstant;
-import com.pan.app.utils.AuthUtils;
+import com.pan.app.util.AuthUtils;
 import org.junit.jupiter.api.Test;
 
 /**

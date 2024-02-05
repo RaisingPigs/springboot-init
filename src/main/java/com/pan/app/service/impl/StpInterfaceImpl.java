@@ -1,7 +1,7 @@
 package com.pan.app.service.impl;
 
 import cn.dev33.satoken.stp.StpInterface;
-import com.pan.app.utils.AuthUtils;
+import com.pan.app.util.AuthUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.pan.app.utils;
+package com.pan.app.util;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.pan.app.common.resp.ResultCode;

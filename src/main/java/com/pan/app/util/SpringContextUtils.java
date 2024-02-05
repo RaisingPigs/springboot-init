@@ -1,4 +1,4 @@
-package com.pan.app.utils;
+package com.pan.app.util;
 
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;

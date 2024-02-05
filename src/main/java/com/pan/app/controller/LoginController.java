@@ -11,7 +11,7 @@ import com.pan.app.model.req.user.UserLoginReq;
 import com.pan.app.model.req.user.UserRegistReq;
 import com.pan.app.model.vo.user.UserVO;
 import com.pan.app.service.LoginService;
-import com.pan.app.utils.AuthUtils;
+import com.pan.app.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;

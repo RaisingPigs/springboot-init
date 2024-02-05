@@ -10,7 +10,7 @@ import com.pan.app.model.dto.user.UserDTO;
 import com.pan.app.model.entity.User;
 import com.pan.app.service.LoginService;
 import com.pan.app.service.UserService;
-import com.pan.app.utils.AuthUtils;
+import com.pan.app.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
