@@ -20,8 +20,6 @@ public class JSONUtils {
     private static final ObjectMapper OBJECT_MAPPER;
     private static final Logger log = LoggerFactory.getLogger(JSONUtils.class);
 
-    private static final String STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
     static {
         OBJECT_MAPPER = SpringContextUtils.getBean(ObjectMapper.class);
     }
