@@ -1,5 +1,5 @@
 server:
-  port: 9995
+  port: ${SERVER_PORT:9999}
   servlet:
     context-path: /api/app
 
@@ -9,9 +9,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/boot_init
-    username: root
-    password: root
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:boot_init}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PWD:root}
     type: com.alibaba.druid.pool.DruidDataSource
 
 management:
@@ -32,6 +32,8 @@ mybatis-plus:
 # knife4j的增强配置
 knife4j:
   enable: true
+  # 开启生产环境屏蔽
+  production: true
   setting:
     language: zh_cn
 
@@ -49,4 +51,4 @@ sa-token:
   # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
   token-style: simple-uuid
   # 是否输出操作日志 
-  is-log: true
+  isl-og: true
