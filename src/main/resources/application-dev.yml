@@ -1,5 +1,5 @@
 server:
-  port: 9995
+  port: 9999
   servlet:
     context-path: /api/app
 
@@ -37,7 +37,7 @@ knife4j:
 
 sa-token:
   # token 名称（同时也是 cookie 名称）
-  token-name: PanToken
+  token-name: AppToken
   # token 永久有效期, 7天(604800秒)后，token必定过期，无法继续使用
   timeout: 604800
   # token 最低活跃频率, 超过30分钟(1800秒)没有请求, token过期
