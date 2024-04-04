@@ -58,7 +58,7 @@ public class LoginLogAop {
 
         String username = SpelUtils.parse(loginLog.username(), paramNames, paramValues);
 
-        SysLoginLog sysLoginLog = createSysLoginLog(null, username, loginLog, State.SUCCESS, e.getMessage());
+        SysLoginLog sysLoginLog = createSysLoginLog(null, username, loginLog, State.FAILED, e.getMessage());
 
         EventPublishUtils.publishEvent(new LoginLogEvent<>(this, sysLoginLog));
     }
