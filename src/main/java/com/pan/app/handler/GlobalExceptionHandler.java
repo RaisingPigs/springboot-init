@@ -38,6 +38,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SaTokenException.class)
     public BaseResponse<?> businessExceptionHandler(SaTokenException e) {
+        log.error("全局异常处理ConstraintViolationException: [{}]", e.getMessage(), e);
         // 不同异常返回不同状态码
         if (e instanceof NotLoginException) {               // 如果是未登录异常
             return ResultUtils.failed(ResultCode.NO_LOGIN);

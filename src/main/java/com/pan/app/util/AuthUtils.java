@@ -21,6 +21,10 @@ public class AuthUtils {
     private AuthUtils() {
     }
 
+    public static Long getLoginUserId() {
+        return getLoginUser().getId();
+    }
+
     public static UserDTO getLoginUser() {
         UserDTO userDTO = StpUtil.getSession().getModel(UserConstant.USER_LOGIN_STATE, UserDTO.class);
 
@@ -32,7 +36,7 @@ public class AuthUtils {
         if (Objects.isNull(userDTO)) {
             throw new BusinessException(ResultCode.SYSTEM_ERR, "userDTO为空");
         }
-        
+
         StpUtil.getSession().set(UserConstant.USER_LOGIN_STATE, userDTO);
     }
 
@@ -40,3 +44,4 @@ public class AuthUtils {
         return DigestUtils.md5DigestAsHex((UserConstant.SALT + password).getBytes(StandardCharsets.UTF_8));
     }
 }
+

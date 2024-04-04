@@ -16,12 +16,16 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `user`
+-- Current Database: `boot_init`
 --
 
-CREATE DATABASE IF NOT EXISTS `boot_init`;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `boot_init` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE `boot_init`;
+
+--
+-- Table structure for table `user`
+--
 
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -42,7 +46,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uni_account` (`username`),
   UNIQUE KEY `user_id_uindex` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户';
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用户';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,7 +55,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'管理员','admin','b42b203d8d0e87b132879b9ee2de0130','default',0,0,1,'2024-01-31 18:13:50',5,'2024-02-01 15:50:10',0),(2,'pan普通用户','111111','df1bdd638fe145905ac269e07d7be92b','default',0,1,1,'2024-02-02 23:34:39',1,'2024-02-02 23:34:43',0);
+INSERT INTO `user` VALUES (1,'管理员','admin','b42b203d8d0e87b132879b9ee2de0130','default',0,0,1,'2024-01-31 18:13:50',5,'2024-02-01 15:50:10',0),(2,'pan普通用户','111111','df1bdd638fe145905ac269e07d7be92b','default',0,1,1,'2024-02-02 23:34:39',1,'2024-02-02 23:34:43',0),(10,'pan普通用户','111112','df1bdd638fe145905ac269e07d7be92b','default',0,1,1,'2024-02-02 23:34:39',1,'2024-02-02 23:34:43',0),(11,'pan普通用户','111113','df1bdd638fe145905ac269e07d7be92b','default',0,1,1,'2024-02-02 23:34:39',1,'2024-02-02 23:34:43',0),(12,'pan普通用户','111114','df1bdd638fe145905ac269e07d7be92b','default',0,1,1,'2024-02-02 23:34:39',1,'2024-02-02 23:34:43',0),(13,'pan普通用户','111115','df1bdd638fe145905ac269e07d7be92b','default',0,1,1,'2024-02-02 23:34:39',1,'2024-02-02 23:34:43',0),(14,'pan普通用户','111116','df1bdd638fe145905ac269e07d7be92b','default',0,1,1,'2024-02-02 23:34:39',1,'2024-02-02 23:34:43',0),(15,'12345678','12345678','df1bdd638fe145905ac269e07d7be92b','12345678',1,1,1,'2024-02-04 08:46:27',1,'2024-02-04 08:49:12',1),(16,'222222','222222','6ea9163a8b6c7f9f03551c93141fb605','222222',0,0,1,'2024-02-04 08:51:43',1,'2024-02-04 09:03:09',1),(17,'333333','333333','6ea9163a8b6c7f9f03551c93141fb605','333333',0,0,1,'2024-02-04 08:59:36',1,'2024-02-04 09:03:13',1),(18,'2222222','2222222','6ea9163a8b6c7f9f03551c93141fb605','2222222',0,1,1,'2024-02-04 09:09:44',1,'2024-02-04 09:13:52',0),(19,'默认用户名yyuoftpxu5','111111111','28121e98c815d70496a6cc5e68dc202a','',0,1,0,'2024-02-04 09:55:02',0,'2024-02-04 09:55:02',0),(20,'默认用户名pmp91mbktr','44444444','e05ef011fb74fc502139f4993fb2ca3a','',0,1,0,'2024-02-04 10:01:13',0,'2024-02-04 10:01:13',0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -64,4 +68,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-02 23:38:34
+-- Dump completed on 2024-04-04 16:49:07

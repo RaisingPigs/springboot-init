@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pan.app.annotation.OperationLog;
 import com.pan.app.common.resp.BaseResponse;
 import com.pan.app.common.resp.ResultCode;
 import com.pan.app.common.resp.ResultUtils;
@@ -12,6 +13,8 @@ import com.pan.app.exception.BusinessException;
 import com.pan.app.model.converter.user.UserConverter;
 import com.pan.app.model.converter.user.UserVOConverter;
 import com.pan.app.model.entity.User;
+import com.pan.app.model.enums.operation.BusinessType;
+import com.pan.app.model.enums.operation.Method;
 import com.pan.app.model.req.user.UserAddReq;
 import com.pan.app.model.req.user.UserQueryReq;
 import com.pan.app.model.req.user.UserUpdateReq;
@@ -42,6 +45,7 @@ public class UserController {
     private final UserService userService;
 
     //region 增删改查
+    @OperationLog(businessType = BusinessType.INSERT, reqMethod = Method.POST, reqModule = "用户模块")
     @PostMapping("/add")
     public BaseResponse<Long> addUser(
         @RequestBody UserAddReq userAddReq) {
@@ -60,6 +64,7 @@ public class UserController {
         return ResultUtils.success(user.getId());
     }
 
+    @OperationLog(businessType = BusinessType.DELETE, reqMethod = Method.DELETE, reqModule = "用户模块")
     @DeleteMapping("/delete/{id}")
     public BaseResponse<Void> deleteUser(@PathVariable("id") Long id) {
         if (Objects.isNull(id) || id <= 0) {
@@ -79,6 +84,7 @@ public class UserController {
         return ResultUtils.success();
     }
 
+    @OperationLog(businessType = BusinessType.UPDATE, reqMethod = Method.PUT, reqModule = "用户模块")
     @PutMapping("/update")
     public BaseResponse<Void> updateUser(
         @RequestBody UserUpdateReq userUpdateReq) {

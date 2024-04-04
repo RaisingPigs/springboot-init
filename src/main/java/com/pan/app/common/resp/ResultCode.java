@@ -27,4 +27,11 @@ public enum ResultCode {
         this.msg = msg;
     }
 
+    public static boolean isSuccessful(int code) {
+        return SUCCESS.code == code;
+    }
+
+    public static boolean isFailed(int code) {
+        return !isSuccessful(code);
+    }
 }

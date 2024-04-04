@@ -4,6 +4,7 @@ import com.pan.app.exception.BusinessException;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @description:
@@ -43,4 +44,13 @@ public class BaseResponse<T> implements Serializable {
     public BaseResponse(BusinessException e) {
         this(e.getCode(), null, e.getMessage());
     }
+
+    public boolean successful() {
+        return ResultCode.isSuccessful(this.code);
+    }
+
+    public boolean empty() {
+        return Objects.isNull(this.data);
+    }
 }
+

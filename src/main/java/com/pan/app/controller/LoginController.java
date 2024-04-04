@@ -1,12 +1,14 @@
 package com.pan.app.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import com.pan.app.annotation.LoginLog;
 import com.pan.app.common.resp.BaseResponse;
 import com.pan.app.common.resp.ResultCode;
 import com.pan.app.common.resp.ResultUtils;
 import com.pan.app.exception.BusinessException;
 import com.pan.app.model.converter.user.UserVOConverter;
 import com.pan.app.model.dto.user.UserDTO;
+import com.pan.app.model.enums.login.Type;
 import com.pan.app.model.req.user.UserLoginReq;
 import com.pan.app.model.req.user.UserRegistReq;
 import com.pan.app.model.vo.user.UserVO;
@@ -47,6 +49,7 @@ public class LoginController {
         return ResultUtils.success(id);
     }
 
+    @LoginLog(loginType = Type.DEFAULT, username = "#userLoginReq.username")
     @PostMapping("/login")
     public BaseResponse<String> userLogin(
         @RequestBody @Validated UserLoginReq userLoginReq) {
