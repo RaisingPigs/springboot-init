@@ -16,8 +16,7 @@ public class SpelUtils {
     public static String parse(String expressionStr, String[] paramNames, Object[] paramValues) {
         EvaluationContext evaluationContext = buildContext(paramNames, paramValues);
 
-        SpelExpressionParser spelExpressionParser = new SpelExpressionParser();
-        Expression expression = spelExpressionParser.parseExpression(expressionStr);
+        Expression expression = PARSER.parseExpression(expressionStr);
         return (String) expression.getValue(evaluationContext);
     }
 
