@@ -17,7 +17,7 @@ public interface UserConverter {
     UserConverter INSTANCE = Mappers.getMapper(UserConverter.class);
 
     User toUser(UserAddReq userAddReq);
-    
+
     User toUser(UserQueryReq userQueryReq);
 
     User toUser(UserUpdateReq userUpdateReq);

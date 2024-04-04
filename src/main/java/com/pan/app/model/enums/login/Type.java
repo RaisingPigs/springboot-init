@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
  **/
 @Getter
 public enum Type {
-    DEFAULT(0, "default"),
-    GITEE(1, "gitee");
+    DEFAULT(0, "默认登录"),
+    GITEE(1, "gitee登录");
 
     private static final Map<Integer, Type> VALUE_MAP = Arrays.stream(values())
         .collect(Collectors.toMap(
