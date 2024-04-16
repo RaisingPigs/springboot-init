@@ -1,9 +1,9 @@
 package com.pan.app.util;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.pan.app.common.resp.ResultCode;
+import com.pan.app.common.resp.BizCode;
 import com.pan.app.constant.UserConstant;
-import com.pan.app.exception.BusinessException;
+import com.pan.app.exception.BizException;
 import com.pan.app.model.dto.user.UserDTO;
 import org.springframework.util.DigestUtils;
 
@@ -29,12 +29,12 @@ public class AuthUtils {
         UserDTO userDTO = StpUtil.getSession().getModel(UserConstant.USER_LOGIN_STATE, UserDTO.class);
 
         return Optional.ofNullable(userDTO)
-            .orElseThrow(() -> new BusinessException(ResultCode.NO_AUTH));
+            .orElseThrow(() -> new BizException(BizCode.NO_AUTH));
     }
 
     public static void setLoginUser(UserDTO userDTO) {
         if (Objects.isNull(userDTO)) {
-            throw new BusinessException(ResultCode.SYSTEM_ERR, "userDTO为空");
+            throw new BizException(BizCode.SYSTEM_ERR, "userDTO为空");
         }
 
         StpUtil.getSession().set(UserConstant.USER_LOGIN_STATE, userDTO);

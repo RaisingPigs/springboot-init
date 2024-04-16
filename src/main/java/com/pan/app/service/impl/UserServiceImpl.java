@@ -2,9 +2,9 @@ package com.pan.app.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.pan.app.common.resp.ResultCode;
+import com.pan.app.common.resp.BizCode;
 import com.pan.app.constant.UserConstant;
-import com.pan.app.exception.BusinessException;
+import com.pan.app.exception.BizException;
 import com.pan.app.mapper.UserMapper;
 import com.pan.app.model.entity.User;
 import com.pan.app.model.enums.user.GenderEnum;
@@ -29,7 +29,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public void validUser(User user, boolean add) {
         if (user == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         String username = user.getUsername();
@@ -42,16 +42,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (add) {
             if (StringUtils.isAnyBlank(username, name, avatar)
                 || ObjectUtil.hasNull(gender, role)) {
-                throw new BusinessException(ResultCode.PARAMS_ERR);
+                throw new BizException(BizCode.PARAMS_ERR);
             }
         }
 
         if (StringUtils.isNotBlank(name) && name.length() > 16) {
-            throw new BusinessException(ResultCode.PARAMS_ERR, "用户名过长");
+            throw new BizException(BizCode.PARAMS_ERR, "用户名过长");
         }
 
         if (ObjectUtil.hasNull(gender, role)) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
     }
 

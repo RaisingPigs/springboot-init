@@ -2,10 +2,8 @@ package com.pan.app.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.pan.app.annotation.LoginLog;
-import com.pan.app.common.resp.BaseResponse;
-import com.pan.app.common.resp.ResultCode;
-import com.pan.app.common.resp.ResultUtils;
-import com.pan.app.exception.BusinessException;
+import com.pan.app.common.resp.BizCode;
+import com.pan.app.exception.BizException;
 import com.pan.app.model.converter.user.UserVOConverter;
 import com.pan.app.model.dto.user.UserDTO;
 import com.pan.app.model.enums.login.Type;
@@ -18,6 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * @description:
@@ -32,54 +33,50 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/register")
-    public BaseResponse<Long> userRegister(
+    public Long userRegister(
         @RequestBody @Validated UserRegistReq userRegistReq) {
         if (userRegistReq == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         String username = userRegistReq.getUsername();
         String password = userRegistReq.getPassword();
         String checkPassword = userRegistReq.getCheckPassword();
         if (StringUtils.isAnyBlank(username, password, checkPassword)) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
-        long id = loginService.userRegister(username, password, checkPassword);
-        return ResultUtils.success(id);
+        return loginService.userRegister(username, password, checkPassword);
     }
 
     @LoginLog(loginType = Type.DEFAULT, username = "#userLoginReq.username")
     @PostMapping("/login")
-    public BaseResponse<String> userLogin(
+    public Map<String, String> userLogin(
         @RequestBody @Validated UserLoginReq userLoginReq) {
         if (userLoginReq == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
         String username = userLoginReq.getUsername();
         String password = userLoginReq.getPassword();
         if (StringUtils.isAnyBlank(username, password)) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         String token = loginService.userLogin(username, password);
 
-        return ResultUtils.success(token);
+        return Collections.singletonMap("token", token);
     }
 
     @SaCheckLogin
     @PostMapping("/logout")
-    public BaseResponse<Boolean> userLogout() {
+    public void userLogout() {
         loginService.userLogout();
-        return ResultUtils.success(true);
     }
 
     @SaCheckLogin
     @GetMapping("/user")
-    public BaseResponse<UserVO> getLoginUser() {
+    public UserVO getLoginUser() {
         UserDTO userDTO = AuthUtils.getLoginUser();
-        UserVO userVO = UserVOConverter.INSTANCE.toUserVO(userDTO);
-
-        return ResultUtils.success(userVO);
+        return UserVOConverter.INSTANCE.toUserVO(userDTO);
     }
 }
