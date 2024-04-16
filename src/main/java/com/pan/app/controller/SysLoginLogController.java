@@ -4,11 +4,9 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.pan.app.common.resp.BaseResponse;
-import com.pan.app.common.resp.ResultCode;
-import com.pan.app.common.resp.ResultUtils;
+import com.pan.app.common.resp.BizCode;
 import com.pan.app.constant.PageConstant;
-import com.pan.app.exception.BusinessException;
+import com.pan.app.exception.BizException;
 import com.pan.app.model.converter.login.SysLoginLogConverter;
 import com.pan.app.model.converter.login.SysLoginLogVOConverter;
 import com.pan.app.model.entity.SysLoginLog;
@@ -35,15 +33,15 @@ public class SysLoginLogController {
     private final SysLoginLogService sysLoginLogService;
 
     @PostMapping("/list/page")
-    public BaseResponse<IPage<SysLoginLogVO>> list(
+    public IPage<SysLoginLogVO> list(
         @RequestBody SysLoginLogQueryReq sysLoginLogQueryReq) {
         if (sysLoginLogQueryReq == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         /*限制爬虫*/
         if (sysLoginLogQueryReq.getPageSize() > PageConstant.MAX_PAGE_SIZE) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         SysLoginLog sysLoginLog = SysLoginLogConverter.INSTANCE.toSysLoginLog(sysLoginLogQueryReq);
@@ -61,8 +59,6 @@ public class SysLoginLogController {
         wrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder, sortField);
 
         IPage<SysLoginLog> loginLogPage = sysLoginLogService.page(new Page<>(pageNum, pageSize), wrapper);
-        IPage<SysLoginLogVO> loginLogVOPage = loginLogPage.convert(SysLoginLogVOConverter.INSTANCE::toSysLoginLogVO);
-
-        return ResultUtils.success(loginLogVOPage);
+        return loginLogPage.convert(SysLoginLogVOConverter.INSTANCE::toSysLoginLogVO);
     }
 }

@@ -3,8 +3,8 @@ package com.pan.app.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pan.app.common.resp.ResultCode;
-import com.pan.app.exception.BusinessException;
+import com.pan.app.common.resp.BizCode;
+import com.pan.app.exception.BizException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class JSONUtils {
             return obj instanceof String ? (String) obj : OBJECT_MAPPER.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             log.error("json转换异常: [{}]", e.getMessage(), e);
-            throw new BusinessException(ResultCode.SYSTEM_ERR, "json转换异常: " + e.getMessage());
+            throw new BizException(BizCode.SYSTEM_ERR, "json转换异常: " + e.getMessage());
         }
     }
 
@@ -47,7 +47,7 @@ public class JSONUtils {
             return OBJECT_MAPPER.readValue(jsonStr, clazz);
         } catch (Exception e) {
             log.error("json转换异常: [{}]", e.getMessage(), e);
-            throw new BusinessException(ResultCode.SYSTEM_ERR, "json转换异常: " + e.getMessage());
+            throw new BizException(BizCode.SYSTEM_ERR, "json转换异常: " + e.getMessage());
         }
     }
 
@@ -59,7 +59,7 @@ public class JSONUtils {
             return OBJECT_MAPPER.readValue(jsonStr, typeReference);
         } catch (IOException e) {
             log.error("json转换异常: [{}]", e.getMessage(), e);
-            throw new BusinessException(ResultCode.SYSTEM_ERR, "json转换异常: " + e.getMessage());
+            throw new BizException(BizCode.SYSTEM_ERR, "json转换异常: " + e.getMessage());
         }
     }
 }

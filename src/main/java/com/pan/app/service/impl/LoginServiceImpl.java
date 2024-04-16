@@ -2,9 +2,9 @@ package com.pan.app.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.RandomUtil;
-import com.pan.app.common.resp.ResultCode;
+import com.pan.app.common.resp.BizCode;
 import com.pan.app.constant.UserConstant;
-import com.pan.app.exception.BusinessException;
+import com.pan.app.exception.BizException;
 import com.pan.app.model.converter.user.UserDTOConverter;
 import com.pan.app.model.dto.user.UserDTO;
 import com.pan.app.model.entity.User;
@@ -28,24 +28,24 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public long userRegister(String username, String password, String checkPassword) {
         if (StringUtils.isAnyBlank(username, password, checkPassword)) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         if (username.length() < 5
             || username.length() > 18
             || password.length() < 5
             || password.length() > 18) {
-            throw new BusinessException(ResultCode.PARAMS_ERR, "用户名密码长度不符合规范");
+            throw new BizException(BizCode.PARAMS_ERR, "用户名密码长度不符合规范");
         }
 
         if (!checkPassword.equals(password)) {
-            throw new BusinessException(ResultCode.PARAMS_ERR, "两次输入密码不一致");
+            throw new BizException(BizCode.PARAMS_ERR, "两次输入密码不一致");
         }
 
         synchronized (username.intern()) {
             long count = userService.lambdaQuery().eq(User::getUsername, username).count();
             if (count > 0) {
-                throw new BusinessException(ResultCode.SAVE_ERR, "该用户名已被使用");
+                throw new BizException(BizCode.PARAMS_ERR, "该用户名已被使用");
             }
 
             /*加密*/
@@ -54,7 +54,7 @@ public class LoginServiceImpl implements LoginService {
             User user = new User(defaultUsername, username, encryptPassword);
             boolean save = userService.save(user);
             if (!save) {
-                throw new BusinessException(ResultCode.SAVE_ERR);
+                throw new BizException(BizCode.PARAMS_ERR);
             }
 
             return user.getId();
@@ -65,13 +65,13 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public String userLogin(String username, String password) {
         if (StringUtils.isAnyBlank(username, password)) {
-            throw new BusinessException(ResultCode.PARAMS_ERR, "用户名密码不能为空");
+            throw new BizException(BizCode.PARAMS_ERR, "用户名密码不能为空");
         }
         if (username.length() < 5
             || username.length() > 18
             || password.length() < 5
             || password.length() > 18) {
-            throw new BusinessException(ResultCode.PARAMS_ERR, "用户名或密码错误");
+            throw new BizException(BizCode.PARAMS_ERR, "用户名或密码错误");
         }
 
         String encryptPassword = AuthUtils.encryptPassword(password);
@@ -80,7 +80,7 @@ public class LoginServiceImpl implements LoginService {
             .eq(User::getPassword, encryptPassword)
             .one();
         if (user == null) {
-            throw new BusinessException(ResultCode.NULL_ERR, "用户名或密码错误");
+            throw new BizException(BizCode.NULL_ERR, "用户名或密码错误");
         }
 
         UserDTO userDTO = UserDTOConverter.INSTANCE.toUserDTO(user);

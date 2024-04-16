@@ -4,11 +4,9 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.pan.app.common.resp.BaseResponse;
-import com.pan.app.common.resp.ResultCode;
-import com.pan.app.common.resp.ResultUtils;
+import com.pan.app.common.resp.BizCode;
 import com.pan.app.constant.PageConstant;
-import com.pan.app.exception.BusinessException;
+import com.pan.app.exception.BizException;
 import com.pan.app.model.converter.operation.SysOperationLogConverter;
 import com.pan.app.model.converter.operation.SysOperationLogVOConverter;
 import com.pan.app.model.entity.SysOperationLog;
@@ -35,15 +33,15 @@ public class SysOperationLogController {
     private final SysOperationLogService sysOperationLogService;
 
     @PostMapping("/list/page")
-    public BaseResponse<IPage<SysOperationLogVO>> list(
+    public IPage<SysOperationLogVO> list(
         @RequestBody SysOperationLogQueryReq sysOperationLogQueryReq) {
         if (sysOperationLogQueryReq == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         /*限制爬虫*/
         if (sysOperationLogQueryReq.getPageSize() > PageConstant.MAX_PAGE_SIZE) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         SysOperationLog sysOperationLog = SysOperationLogConverter.INSTANCE.toSysOperationLog(sysOperationLogQueryReq);
@@ -61,8 +59,7 @@ public class SysOperationLogController {
         wrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder, sortField);
 
         IPage<SysOperationLog> sysOperationLogPage = sysOperationLogService.page(new Page<>(pageNum, pageSize), wrapper);
-        IPage<SysOperationLogVO> operationLogVOPage = sysOperationLogPage.convert(SysOperationLogVOConverter.INSTANCE::toSysOperationLogVO);
-
-        return ResultUtils.success(operationLogVOPage);
+        
+        return sysOperationLogPage.convert(SysOperationLogVOConverter.INSTANCE::toSysOperationLogVO);
     }
 }

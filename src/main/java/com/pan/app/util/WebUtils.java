@@ -1,6 +1,6 @@
 package com.pan.app.util;
 
-import com.pan.app.common.resp.BaseResponse;
+import com.pan.app.common.resp.BizResp;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -16,11 +16,11 @@ public class WebUtils {
     
     public static void respMsg(
         HttpServletResponse response,
-        BaseResponse<?> baseResponse) throws IOException {
+        BizResp<?> bizResp) throws IOException {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setContentType(CONTENT_TYPE_VALUE);
 
-        String json = JSONUtils.toJsonStr(baseResponse);
+        String json = JSONUtils.toJsonStr(bizResp);
         response.getWriter().append(json);
     }
 }

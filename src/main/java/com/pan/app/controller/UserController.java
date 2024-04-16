@@ -5,11 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pan.app.annotation.OperationLog;
-import com.pan.app.common.resp.BaseResponse;
-import com.pan.app.common.resp.ResultCode;
-import com.pan.app.common.resp.ResultUtils;
+import com.pan.app.common.resp.BizCode;
 import com.pan.app.constant.PageConstant;
-import com.pan.app.exception.BusinessException;
+import com.pan.app.exception.BizException;
 import com.pan.app.model.converter.user.UserConverter;
 import com.pan.app.model.converter.user.UserVOConverter;
 import com.pan.app.model.entity.User;
@@ -47,10 +45,10 @@ public class UserController {
     //region 增删改查
     @OperationLog(businessType = BusinessType.INSERT, reqMethod = Method.POST, reqModule = "用户模块")
     @PostMapping("/add")
-    public BaseResponse<Long> addUser(
+    public Long addUser(
         @RequestBody UserAddReq userAddReq) {
         if (userAddReq == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         User user = UserConverter.INSTANCE.toUser(userAddReq);
@@ -58,38 +56,36 @@ public class UserController {
 
         boolean save = userService.saveUser(user);
         if (!save) {
-            throw new BusinessException(ResultCode.SAVE_ERR);
+            throw new BizException(BizCode.SYSTEM_ERR);
         }
 
-        return ResultUtils.success(user.getId());
+        return user.getId();
     }
 
     @OperationLog(businessType = BusinessType.DELETE, reqMethod = Method.DELETE, reqModule = "用户模块")
     @DeleteMapping("/delete/{id}")
-    public BaseResponse<Void> deleteUser(@PathVariable("id") Long id) {
+    public void deleteUser(@PathVariable("id") Long id) {
         if (Objects.isNull(id) || id <= 0) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         User oldUser = userService.getById(id);
         if (oldUser == null) {
-            throw new BusinessException(ResultCode.NULL_ERR);
+            throw new BizException(BizCode.NULL_ERR);
         }
 
         boolean b = userService.removeById(id);
         if (!b) {
-            throw new BusinessException(ResultCode.DELETE_ERR);
+            throw new BizException(BizCode.SYSTEM_ERR);
         }
-
-        return ResultUtils.success();
     }
 
     @OperationLog(businessType = BusinessType.UPDATE, reqMethod = Method.PUT, reqModule = "用户模块")
     @PutMapping("/update")
-    public BaseResponse<Void> updateUser(
+    public void updateUser(
         @RequestBody UserUpdateReq userUpdateReq) {
         if (userUpdateReq == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         User user = UserConverter.INSTANCE.toUser(userUpdateReq);
@@ -97,31 +93,28 @@ public class UserController {
 
         User oldUser = userService.getById(user.getId());
         if (oldUser == null) {
-            throw new BusinessException(ResultCode.NULL_ERR);
+            throw new BizException(BizCode.NULL_ERR);
         }
 
         boolean b = userService.updateById(user);
         if (!b) {
-            throw new BusinessException(ResultCode.UPDATE_ERR);
+            throw new BizException(BizCode.SYSTEM_ERR);
         }
-
-        return ResultUtils.success();
     }
 
     @GetMapping("/get/{id}")
-    public BaseResponse<UserVO> getUserById(
+    public UserVO getUserById(
         @PathVariable("id")
         @NotNull(message = "参数异常")
         @Min(value = 1, message = "id不正确")
         Long id) {
 
         User user = userService.getById(id);
-        UserVO userVO = UserVOConverter.INSTANCE.toUserVO(user);
-        return ResultUtils.success(userVO);
+        return UserVOConverter.INSTANCE.toUserVO(user);
     }
 
     @PostMapping("/list")
-    public BaseResponse<List<UserVO>> listUser(
+    public List<UserVO> listUser(
         @RequestBody UserQueryReq userQueryReq) {
         User user = null;
         if (userQueryReq != null) {
@@ -131,20 +124,19 @@ public class UserController {
         QueryWrapper<User> wrapper = new QueryWrapper<>(user);
         List<User> userList = userService.list(wrapper);
 
-        List<UserVO> userVOList = userList.stream().map(UserVOConverter.INSTANCE::toUserVO).collect(Collectors.toList());
-        return ResultUtils.success(userVOList);
+        return userList.stream().map(UserVOConverter.INSTANCE::toUserVO).collect(Collectors.toList());
     }
 
     @PostMapping("/list/page")
-    public BaseResponse<IPage<UserVO>> listUserByPage(
+    public IPage<UserVO> listUserByPage(
         @RequestBody UserQueryReq userQueryReq) {
         if (userQueryReq == null) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         /*限制爬虫*/
         if (userQueryReq.getPageSize() > PageConstant.MAX_PAGE_SIZE) {
-            throw new BusinessException(ResultCode.PARAMS_ERR);
+            throw new BizException(BizCode.PARAMS_ERR);
         }
 
         User user = UserConverter.INSTANCE.toUser(userQueryReq);
@@ -165,9 +157,7 @@ public class UserController {
         wrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder, sortField);
 
         IPage<User> userPage = userService.page(new Page<>(pageNum, pageSize), wrapper);
-        IPage<UserVO> userVOPage = userPage.convert(UserVOConverter.INSTANCE::toUserVO);
-
-        return ResultUtils.success(userVOPage);
+        return userPage.convert(UserVOConverter.INSTANCE::toUserVO);
     }
     //endregion
 }
