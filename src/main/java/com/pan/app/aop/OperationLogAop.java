@@ -2,7 +2,6 @@ package com.pan.app.aop;
 
 import cn.hutool.extra.servlet.ServletUtil;
 import com.pan.app.annotation.OperationLog;
-import com.pan.app.common.resp.BizResp;
 import com.pan.app.event.OperationLogEvent;
 import com.pan.app.model.dto.user.UserDTO;
 import com.pan.app.model.entity.SysOperationLog;
@@ -35,9 +34,9 @@ public class OperationLogAop {
     public void operationLogAspect(OperationLog operationLog) {
     }
 
-    @AfterReturning(value = "operationLogAspect(operationLog)", argNames = "joinPoint,operationLog,returnValue", returning = "returnValue")
-    public void doAfterReturning(JoinPoint joinPoint, OperationLog operationLog, BizResp<?> returnValue) {
-        SysOperationLog sysOperationLog = createSysOperationLog(joinPoint, operationLog, JSONUtils.toJsonStr(returnValue));
+    @AfterReturning(value = "operationLogAspect(operationLog)", argNames = "joinPoint,operationLog")
+    public void doAfterReturning(JoinPoint joinPoint, OperationLog operationLog) {
+        SysOperationLog sysOperationLog = createSysOperationLog(joinPoint, operationLog, "操作成功");
         EventPublishUtils.publishEvent(new OperationLogEvent<>(this, sysOperationLog));
     }
 

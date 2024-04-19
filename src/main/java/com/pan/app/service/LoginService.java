@@ -1,14 +1,17 @@
 package com.pan.app.service;
 
+import com.pan.app.model.req.user.UserLoginReq;
+import com.pan.app.model.req.user.UserRegistReq;
+
 /**
  * @description:
  * @author: Mr.Pan
  * @create: 2024-02-04 05:23
  **/
 public interface LoginService {
-    String userLogin(String username, String password);
+    String userLogin(UserLoginReq userLoginReq);
 
     void userLogout();
 
-    long userRegister(String username, String password, String checkPassword);
+    long userRegister(UserRegistReq userRegistReq);
 }

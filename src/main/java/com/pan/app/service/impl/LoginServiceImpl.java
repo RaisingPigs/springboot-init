@@ -8,11 +8,12 @@ import com.pan.app.exception.BizException;
 import com.pan.app.model.converter.user.UserDTOConverter;
 import com.pan.app.model.dto.user.UserDTO;
 import com.pan.app.model.entity.User;
+import com.pan.app.model.req.user.UserLoginReq;
+import com.pan.app.model.req.user.UserRegistReq;
 import com.pan.app.service.LoginService;
 import com.pan.app.service.UserService;
 import com.pan.app.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,21 +27,9 @@ public class LoginServiceImpl implements LoginService {
     private final UserService userService;
 
     @Override
-    public long userRegister(String username, String password, String checkPassword) {
-        if (StringUtils.isAnyBlank(username, password, checkPassword)) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-
-        if (username.length() < 5
-            || username.length() > 18
-            || password.length() < 5
-            || password.length() > 18) {
-            throw new BizException(BizCode.PARAMS_ERR, "用户名密码长度不符合规范");
-        }
-
-        if (!checkPassword.equals(password)) {
-            throw new BizException(BizCode.PARAMS_ERR, "两次输入密码不一致");
-        }
+    public long userRegister(UserRegistReq userRegistReq) {
+        String username = userRegistReq.getUsername();
+        String password = userRegistReq.getPassword();
 
         synchronized (username.intern()) {
             long count = userService.lambdaQuery().eq(User::getUsername, username).count();
@@ -63,20 +52,10 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public String userLogin(String username, String password) {
-        if (StringUtils.isAnyBlank(username, password)) {
-            throw new BizException(BizCode.PARAMS_ERR, "用户名密码不能为空");
-        }
-        if (username.length() < 5
-            || username.length() > 18
-            || password.length() < 5
-            || password.length() > 18) {
-            throw new BizException(BizCode.PARAMS_ERR, "用户名或密码错误");
-        }
-
-        String encryptPassword = AuthUtils.encryptPassword(password);
+    public String userLogin(UserLoginReq userLoginReq) {
+        String encryptPassword = AuthUtils.encryptPassword(userLoginReq.getPassword());
         User user = userService.lambdaQuery()
-            .eq(User::getUsername, username)
+            .eq(User::getUsername, userLoginReq.getUsername())
             .eq(User::getPassword, encryptPassword)
             .one();
         if (user == null) {

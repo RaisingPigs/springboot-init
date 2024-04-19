@@ -1,12 +1,12 @@
 package com.pan.app.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pan.app.annotation.OperationLog;
 import com.pan.app.common.resp.BizCode;
-import com.pan.app.constant.PageConstant;
 import com.pan.app.exception.BizException;
 import com.pan.app.model.converter.user.UserConverter;
 import com.pan.app.model.converter.user.UserVOConverter;
@@ -25,9 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @description:
@@ -45,14 +43,8 @@ public class UserController {
     //region 增删改查
     @OperationLog(businessType = BusinessType.INSERT, reqMethod = Method.POST, reqModule = "用户模块")
     @PostMapping("/add")
-    public Long addUser(
-        @RequestBody UserAddReq userAddReq) {
-        if (userAddReq == null) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-
+    public Long addUser(@RequestBody @Validated UserAddReq userAddReq) {
         User user = UserConverter.INSTANCE.toUser(userAddReq);
-        userService.validUser(user, true);
 
         boolean save = userService.saveUser(user);
         if (!save) {
@@ -64,7 +56,12 @@ public class UserController {
 
     @OperationLog(businessType = BusinessType.DELETE, reqMethod = Method.DELETE, reqModule = "用户模块")
     @DeleteMapping("/delete/{id}")
-    public void deleteUser(@PathVariable("id") Long id) {
+    public void deleteUser(
+        @PathVariable("id")
+        @NotNull(message = "参数异常")
+        @Min(value = 1, message = "id不正确")
+        Long id
+    ) {
         if (Objects.isNull(id) || id <= 0) {
             throw new BizException(BizCode.PARAMS_ERR);
         }
@@ -83,13 +80,12 @@ public class UserController {
     @OperationLog(businessType = BusinessType.UPDATE, reqMethod = Method.PUT, reqModule = "用户模块")
     @PutMapping("/update")
     public void updateUser(
-        @RequestBody UserUpdateReq userUpdateReq) {
+        @RequestBody @Validated UserUpdateReq userUpdateReq) {
         if (userUpdateReq == null) {
             throw new BizException(BizCode.PARAMS_ERR);
         }
 
         User user = UserConverter.INSTANCE.toUser(userUpdateReq);
-        userService.validUser(user, false);
 
         User oldUser = userService.getById(user.getId());
         if (oldUser == null) {
@@ -107,56 +103,31 @@ public class UserController {
         @PathVariable("id")
         @NotNull(message = "参数异常")
         @Min(value = 1, message = "id不正确")
-        Long id) {
+        Long id
+    ) {
 
         User user = userService.getById(id);
         return UserVOConverter.INSTANCE.toUserVO(user);
     }
 
-    @PostMapping("/list")
-    public List<UserVO> listUser(
-        @RequestBody UserQueryReq userQueryReq) {
-        User user = null;
-        if (userQueryReq != null) {
-            user = UserConverter.INSTANCE.toUser(userQueryReq);
-        }
-
-        QueryWrapper<User> wrapper = new QueryWrapper<>(user);
-        List<User> userList = userService.list(wrapper);
-
-        return userList.stream().map(UserVOConverter.INSTANCE::toUserVO).collect(Collectors.toList());
-    }
-
     @PostMapping("/list/page")
     public IPage<UserVO> listUserByPage(
         @RequestBody UserQueryReq userQueryReq) {
-        if (userQueryReq == null) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-
-        /*限制爬虫*/
-        if (userQueryReq.getPageSize() > PageConstant.MAX_PAGE_SIZE) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-
-        User user = UserConverter.INSTANCE.toUser(userQueryReq);
-
         long pageNum = userQueryReq.getPageNum();
         long pageSize = userQueryReq.getPageSize();
         String sortField = userQueryReq.getSortField();
         boolean sortOrder = userQueryReq.isSortOrder();
-        String name = user.getName();
-        String username = user.getUsername();
-        user.setName(null);
-        user.setUsername(null);
+        String name = userQueryReq.getName();
+        String username = userQueryReq.getUsername();
 
-        QueryWrapper<User> wrapper = new QueryWrapper<>(user);
-        /*使用userName字段做模糊查询*/
-        wrapper.like(StringUtils.isNotBlank(name), "name", name);
-        wrapper.like(StringUtils.isNotBlank(username), "username", username);
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder, sortField);
 
-        IPage<User> userPage = userService.page(new Page<>(pageNum, pageSize), wrapper);
+        LambdaQueryWrapper<User> lambdaQueryWrapper = wrapper.lambda()
+            .like(StringUtils.isNotBlank(name), User::getName, name)
+            .like(StringUtils.isNotBlank(username), User::getUsername, username);
+
+        IPage<User> userPage = userService.page(new Page<>(pageNum, pageSize), lambdaQueryWrapper);
         return userPage.convert(UserVOConverter.INSTANCE::toUserVO);
     }
     //endregion

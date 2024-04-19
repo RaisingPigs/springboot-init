@@ -9,8 +9,6 @@ import com.pan.app.model.entity.User;
  * @createDate 2023-02-21 16:25:21
  */
 public interface UserService extends IService<User> {
-    void validUser(User user, boolean add);
-
     boolean isAdmin();
 
     boolean saveUser(User user);

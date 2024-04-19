@@ -4,7 +4,6 @@ import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.pan.app.annotation.LoginLog;
-import com.pan.app.common.resp.BizResp;
 import com.pan.app.constant.RequestConstant;
 import com.pan.app.event.LoginLogEvent;
 import com.pan.app.model.dto.user.UserDTO;
@@ -40,13 +39,13 @@ public class LoginLogAop {
     }
 
     @AfterReturning(value = "loginLogAspect(loginLog)", argNames = "joinPoint,loginLog,returnValue", returning = "returnValue")
-    public void doAfterReturning(JoinPoint joinPoint, LoginLog loginLog, BizResp<?> returnValue) {
+    public void doAfterReturning(JoinPoint joinPoint, LoginLog loginLog, Object returnValue) {
         UserDTO loginUser = AuthUtils.getLoginUser();
         Long userId = loginUser.getId();
         String username = loginUser.getUsername();
-        State status = State.of(returnValue.successful());
-        String msg = returnValue.getMsg();
-
+        State status = State.SUCCESS;
+        String msg = State.SUCCESS.getDesc();
+        
         SysLoginLog sysLoginLog = createSysLoginLog(userId, username, loginLog, status, msg);
         EventPublishUtils.publishEvent(new LoginLogEvent<>(this, sysLoginLog));
     }

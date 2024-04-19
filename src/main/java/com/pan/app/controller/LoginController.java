@@ -2,8 +2,6 @@ package com.pan.app.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.pan.app.annotation.LoginLog;
-import com.pan.app.common.resp.BizCode;
-import com.pan.app.exception.BizException;
 import com.pan.app.model.converter.user.UserVOConverter;
 import com.pan.app.model.dto.user.UserDTO;
 import com.pan.app.model.enums.login.Type;
@@ -13,7 +11,6 @@ import com.pan.app.model.vo.user.UserVO;
 import com.pan.app.service.LoginService;
 import com.pan.app.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +22,6 @@ import java.util.Map;
  * @author: Mr.Pan
  * @create: 2024-02-04 05:18
  **/
-@Validated
 @RestController
 @RequestMapping("/sys")
 @RequiredArgsConstructor
@@ -33,36 +29,15 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("/register")
-    public Long userRegister(
-        @RequestBody @Validated UserRegistReq userRegistReq) {
-        if (userRegistReq == null) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
+    public Long userRegister(@RequestBody @Validated UserRegistReq userRegistReq) {
 
-        String username = userRegistReq.getUsername();
-        String password = userRegistReq.getPassword();
-        String checkPassword = userRegistReq.getCheckPassword();
-        if (StringUtils.isAnyBlank(username, password, checkPassword)) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-
-        return loginService.userRegister(username, password, checkPassword);
+        return loginService.userRegister(userRegistReq);
     }
 
     @LoginLog(loginType = Type.DEFAULT, username = "#userLoginReq.username")
     @PostMapping("/login")
-    public Map<String, String> userLogin(
-        @RequestBody @Validated UserLoginReq userLoginReq) {
-        if (userLoginReq == null) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-        String username = userLoginReq.getUsername();
-        String password = userLoginReq.getPassword();
-        if (StringUtils.isAnyBlank(username, password)) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-
-        String token = loginService.userLogin(username, password);
+    public Map<String, String> userLogin(@RequestBody @Validated UserLoginReq userLoginReq) {
+        String token = loginService.userLogin(userLoginReq);
 
         return Collections.singletonMap("token", token);
     }

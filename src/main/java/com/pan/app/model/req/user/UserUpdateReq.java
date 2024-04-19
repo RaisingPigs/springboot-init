@@ -4,6 +4,8 @@ import com.pan.app.model.enums.user.GenderEnum;
 import com.pan.app.model.enums.user.RoleEnum;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -17,7 +19,10 @@ public class UserUpdateReq implements Serializable {
     /**
      * id
      */
+    @NotNull
+    @Min(value = 1L, message = "id异常")
     private Long id;
+    
     /**
      * 用户昵称
      */

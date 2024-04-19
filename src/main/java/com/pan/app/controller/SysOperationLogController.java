@@ -4,9 +4,6 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.pan.app.common.resp.BizCode;
-import com.pan.app.constant.PageConstant;
-import com.pan.app.exception.BizException;
 import com.pan.app.model.converter.operation.SysOperationLogConverter;
 import com.pan.app.model.converter.operation.SysOperationLogVOConverter;
 import com.pan.app.model.entity.SysOperationLog;
@@ -35,15 +32,6 @@ public class SysOperationLogController {
     @PostMapping("/list/page")
     public IPage<SysOperationLogVO> list(
         @RequestBody SysOperationLogQueryReq sysOperationLogQueryReq) {
-        if (sysOperationLogQueryReq == null) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-
-        /*限制爬虫*/
-        if (sysOperationLogQueryReq.getPageSize() > PageConstant.MAX_PAGE_SIZE) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-
         SysOperationLog sysOperationLog = SysOperationLogConverter.INSTANCE.toSysOperationLog(sysOperationLogQueryReq);
 
         long pageNum = sysOperationLogQueryReq.getPageNum();
@@ -54,12 +42,14 @@ public class SysOperationLogController {
         sysOperationLog.setOperatorName(null);
 
         QueryWrapper<SysOperationLog> wrapper = new QueryWrapper<>(sysOperationLog);
-        /*使用userName字段做模糊查询*/
-        wrapper.like(StringUtils.isNotBlank(operatorName), "operator_name", operatorName);
         wrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder, sortField);
 
+        wrapper.lambda()
+            .like(StringUtils.isNotBlank(operatorName), SysOperationLog::getOperatorName, operatorName)
+            .orderBy(true, false, SysOperationLog::getCreateTime);
+
         IPage<SysOperationLog> sysOperationLogPage = sysOperationLogService.page(new Page<>(pageNum, pageSize), wrapper);
-        
+
         return sysOperationLogPage.convert(SysOperationLogVOConverter.INSTANCE::toSysOperationLogVO);
     }
 }

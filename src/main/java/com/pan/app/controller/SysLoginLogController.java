@@ -1,12 +1,10 @@
 package com.pan.app.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.pan.app.common.resp.BizCode;
-import com.pan.app.constant.PageConstant;
-import com.pan.app.exception.BizException;
 import com.pan.app.model.converter.login.SysLoginLogConverter;
 import com.pan.app.model.converter.login.SysLoginLogVOConverter;
 import com.pan.app.model.entity.SysLoginLog;
@@ -35,15 +33,6 @@ public class SysLoginLogController {
     @PostMapping("/list/page")
     public IPage<SysLoginLogVO> list(
         @RequestBody SysLoginLogQueryReq sysLoginLogQueryReq) {
-        if (sysLoginLogQueryReq == null) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-
-        /*限制爬虫*/
-        if (sysLoginLogQueryReq.getPageSize() > PageConstant.MAX_PAGE_SIZE) {
-            throw new BizException(BizCode.PARAMS_ERR);
-        }
-
         SysLoginLog sysLoginLog = SysLoginLogConverter.INSTANCE.toSysLoginLog(sysLoginLogQueryReq);
 
         long pageNum = sysLoginLogQueryReq.getPageNum();
@@ -55,10 +44,14 @@ public class SysLoginLogController {
 
         QueryWrapper<SysLoginLog> wrapper = new QueryWrapper<>(sysLoginLog);
         /*使用userName字段做模糊查询*/
-        wrapper.like(StringUtils.isNotBlank(username), "username", username);
         wrapper.orderBy(StringUtils.isNotBlank(sortField), sortOrder, sortField);
 
-        IPage<SysLoginLog> loginLogPage = sysLoginLogService.page(new Page<>(pageNum, pageSize), wrapper);
+        LambdaQueryWrapper<SysLoginLog> lambdaQueryWrapper = wrapper.lambda()
+            .like(StringUtils.isNotBlank(username), SysLoginLog::getUsername, username)
+            .orderBy(true, false, SysLoginLog::getCreateTime);
+
+        IPage<SysLoginLog> loginLogPage = sysLoginLogService.page(new Page<>(pageNum, pageSize), lambdaQueryWrapper);
+
         return loginLogPage.convert(SysLoginLogVOConverter.INSTANCE::toSysLoginLogVO);
     }
 }
