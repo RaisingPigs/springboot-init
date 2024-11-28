@@ -1,5 +1,6 @@
 package com.pan.app.util;
 
+import cn.hutool.http.ContentType;
 import com.pan.app.common.resp.BizResp;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,13 +13,11 @@ import java.nio.charset.StandardCharsets;
  * @create: 2024-02-02 08:16
  **/
 public class WebUtils {
-    private static final String CONTENT_TYPE_VALUE = "application/json";
-    
     public static void respMsg(
-        HttpServletResponse response,
-        BizResp<?> bizResp) throws IOException {
+            HttpServletResponse response,
+            BizResp<?> bizResp) throws IOException {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        response.setContentType(CONTENT_TYPE_VALUE);
+        response.setContentType(ContentType.JSON.getValue());
 
         String json = JSONUtils.toJsonStr(bizResp);
         response.getWriter().append(json);
